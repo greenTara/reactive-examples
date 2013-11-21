@@ -1,9 +1,10 @@
 package nodescala
 
+
 import math.random
 
-object node {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(96); 
-  println("Welcome to the Scala worksheet")
+object node1 {
+  println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   abstract class Coin {
      val denomination: Int
   }
@@ -21,15 +22,16 @@ object node {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
   trait Adventure {
     def collectCoins(): List[Coin]
     def buyTreasure(coins: List[Coin]): Treasure
-  };$skip(419); 
+  }
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)
-  class GameOverException(msg: String) extends Error;System.out.println("""eatenByMonster: (a: nodescala.node.Adventure)Boolean""");$skip(77); 
-  val treasureCost = 50
+  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
+  class GameOverException(msg: String) extends Error
+  val treasureCost = 50                           //> treasureCost  : Int = 50
   
   object Diamond extends Treasure {
     val value = treasureCost
-  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(257); 
+    override def toString = "Diamond"
+  }
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
@@ -39,7 +41,7 @@ object node {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
     else {
       Thread.sleep(100)
       new Silver
-    }
+    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node1.Coin
   
   object Adventure {
     def apply() = new Adventure {
@@ -59,11 +61,14 @@ object node {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node.Coin""");$skip(633); 
+  }
 
-  val adventure = Adventure();System.out.println("""adventure  : nodescala.node.Adventure{def totalCoins(coins: List[nodescala.node.Coin]): Int} = """ + $show(adventure ));$skip(39); 
-  val coins = adventure.collectCoins();System.out.println("""coins  : List[nodescala.node.Coin] = """ + $show(coins ));$skip(46); 
-  val treasure = adventure.buyTreasure(coins);System.out.println("""treasure  : nodescala.node.Treasure = """ + $show(treasure ))}
+  val adventure = Adventure()                     //> adventure  : nodescala.node1.Adventure{def totalCoins(coins: List[nodescala
+                                                  //| .node1.Coin]): Int} = nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1@2
+                                                  //| ee28063
+  val coins = adventure.collectCoins()            //> coins  : List[nodescala.node1.Coin] = List(Gold(), Gold(), Gold(), Silver()
+                                                  //| , Gold(), Silver(), Silver(), Gold(), Silver(), Gold())
+  val treasure = adventure.buyTreasure(coins)     //> treasure  : nodescala.node1.Treasure = Diamond
    
    
 }
