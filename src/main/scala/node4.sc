@@ -1,8 +1,9 @@
 package nodescala
 
 import math.random
+import scala.util.{Try, Success, Failure}
 
-object node1 {
+object node4 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   abstract class Coin {
      val denomination: Int
@@ -19,11 +20,11 @@ object node1 {
     }
   
   trait Adventure {
-    def collectCoins(): List[Coin]
-    def buyTreasure(coins: List[Coin]): Treasure
+    def collectCoins(): Try[List[Coin]]
+    def buyTreasure(coins: List[Coin]): Try[Treasure]
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node4.Adventure)Boolean
   class GameOverException(msg: String) extends Error
   val treasureCost = 50                           //> treasureCost  : Int = 50
   
@@ -40,11 +41,11 @@ object node1 {
     else {
       Thread.sleep(100)
       new Silver
-    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node1.Coin
+    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node4.Coin
   
   object Adventure {
     def apply() = new Adventure {
-       def collectCoins(): List[Coin] = {
+       def collectCoins(): Try[List[Coin]] = Try {
          if (eatenByMonster(this))
            throw(new GameOverException("Oooops"))
          else for { i <- 1 to 10 toList } yield coinSource(random, 0.5)
@@ -52,7 +53,7 @@ object node1 {
        def totalCoins(coins: List[Coin]) =
          coins.foldLeft(0)( (sum, coin) => sum + coin.denomination  )
        
-       def buyTreasure(coins: List[Coin]): Treasure =
+       def buyTreasure(coins: List[Coin]): Try[Treasure] = Try
        {
          if (totalCoins(coins) < treasureCost)
            throw(new GameOverException("Nice try!"))
@@ -62,12 +63,12 @@ object node1 {
     }
   }
 
-  val adventure = Adventure()                     //> adventure  : nodescala.node1.Adventure{def totalCoins(coins: List[nodescala
-                                                  //| .node1.Coin]): Int} = nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1@2
-                                                  //| ee28063
-  val coins = adventure.collectCoins()            //> coins  : List[nodescala.node1.Coin] = List(Gold(), Gold(), Gold(), Gold(), 
-                                                  //| Silver(), Silver(), Silver(), Gold(), Gold(), Gold())
-  val treasure = adventure.buyTreasure(coins)     //> treasure  : nodescala.node1.Treasure = Diamond
-
+  val adventure = Adventure()                     //> adventure  : nodescala.node4.Adventure{def totalCoins(coins: List[nodescala
+                                                  //| .node4.Coin]): Int} = nodescala.node4$$anonfun$main$1$Adventure$3$$anon$1@1
+                                                  //| 85afba1
+ val treasure: Try[Treasure] = for {
+   coins <- adventure.collectCoins()
+   treasure <- adventure.buyTreasure(coins)
+ } yield treasure                                 //> treasure  : scala.util.Try[nodescala.node4.Treasure] = Success(Diamond)
    
 }
