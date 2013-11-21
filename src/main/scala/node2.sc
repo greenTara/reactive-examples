@@ -69,12 +69,12 @@ object node2 {
                                                   //| 81ca265
   val coins: Try[List[Coin]] = adventure.collectCoins()
                                                   //> coins  : scala.util.Try[List[nodescala.node2.Coin]] = Success(List(Silver()
-                                                  //| , Gold(), Gold(), Silver(), Silver(), Silver(), Silver(), Silver(), Silver(
-                                                  //| ), Gold()))
+                                                  //| , Silver(), Gold(), Gold(), Silver(), Silver(), Gold(), Silver(), Silver(),
+                                                  //|  Silver()))
   val treasure: Try[Treasure] = coins match {
    case Success(cs)          => adventure.buyTreasure(cs)
    //case failure @ Failure(t) => failure  // This produces a type error.
-   case failure @ Failure(t) => Failure(t)
+   case Failure(t) => Failure(t)
   }                                               //> treasure  : scala.util.Try[nodescala.node2.Treasure] = Failure(nodescala.no
                                                   //| de2$$anonfun$main$1$GameOverException$1)
 

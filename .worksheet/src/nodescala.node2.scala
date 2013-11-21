@@ -65,11 +65,11 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node2.Coin""");$skip(651); 
 
   val adventure = Adventure();System.out.println("""adventure  : nodescala.node2.Adventure{def totalCoins(coins: List[nodescala.node2.Coin]): Int} = """ + $show(adventure ));$skip(56); 
-  val coins: Try[List[Coin]] = adventure.collectCoins();System.out.println("""coins  : scala.util.Try[List[nodescala.node2.Coin]] = """ + $show(coins ));$skip(225); 
+  val coins: Try[List[Coin]] = adventure.collectCoins();System.out.println("""coins  : scala.util.Try[List[nodescala.node2.Coin]] = """ + $show(coins ));$skip(215); 
   val treasure: Try[Treasure] = coins match {
    case Success(cs)          => adventure.buyTreasure(cs)
    //case failure @ Failure(t) => failure  // This produces a type error.
-   case failure @ Failure(t) => Failure(t)
+   case Failure(t) => Failure(t)
   };System.out.println("""treasure  : scala.util.Try[nodescala.node2.Treasure] = """ + $show(treasure ))}
 
    
