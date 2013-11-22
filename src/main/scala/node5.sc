@@ -13,23 +13,19 @@ import ExecutionContext.Implicits.global
 object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
-    val EMail1 = (for {i <- 0 to 11} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(67, 75, 32, 22, -89, -13, 73, -24, 124, 41, -9
-                                                  //| , -42)
+    val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
+                                                  //> EMail1  : Array[Byte] = Array(-30, 58)
     val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-53, -112, 55, -102, -23, 26, -81, 64, -61, 79
-                                                  //| , -28)
+                                                  //> EMail2  : Array[Byte] = Array(-126, -59, 123, 34, 53, -34, 0, -74, -62, -2, 
+                                                  //| -73)
     
-  abstract class Confirmation{
-    val max: Int
-    }
   
   trait Socket {
     def readFromMemory(): Future[Array[Byte]]
     def sentToEurope(packet: Array[Byte]): Future[Array[Byte]]
   }
  
-  def disconnect(a:Socket) = (random < 0.5)       //> disconnect: (a: nodescala.node5.Socket)Boolean
+  def disconnect(a:Socket) = (random < 0.3)       //> disconnect: (a: nodescala.node5.Socket)Boolean
   class InputException(msg: String) extends Error{
     override def toString = msg
   }
@@ -43,11 +39,11 @@ object node5 {
    
   def packetSource(rand: Double, prob: Double ): Array[Byte] =
     if (rand < prob) {
-      blocking {Thread.sleep(1000)}
+      blocking {Thread.sleep(10)}
       EMail2
     }
     else {
-      blocking {Thread.sleep(100)}
+      blocking {Thread.sleep(1)}
       EMail1
     }                                             //> packetSource: (rand: Double, prob: Double)Array[Byte]
   
@@ -69,32 +65,25 @@ object node5 {
     }
   }
 
-  val socket = Socket()                           //> socket  : nodescala.node5.Socket = nodescala.node5$$anonfun$main$1$Socket$3
-                                                  //| $$anon$1@70984b95
- val confirmation: Future[Array[Byte]] = for {
-   packet <- socket.readFromMemory()
-   confirmation <- socket.sentToEurope(packet)
- } yield confirmation                             //> confirmation  : scala.concurrent.Future[Array[Byte]] = scala.concurrent.imp
-                                                  //| l.Promise$DefaultPromise@379bc1bf
- println(Await.result(confirmation, 10 second))   //> java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| 	at scala.concurrent.impl.Promise$.resolver(Promise.scala:52)
-                                                  //| 	at scala.concurrent.impl.Promise$.scala$concurrent$impl$Promise$$resolve
-                                                  //| Try(Promise.scala:44)
-                                                  //| 	at scala.concurrent.impl.Promise$DefaultPromise.tryComplete(Promise.scal
-                                                  //| a:116)
-                                                  //| 	at scala.concurrent.Promise$class.complete(Promise.scala:55)
-                                                  //| 	at scala.concurrent.impl.Promise$DefaultPromise.complete(Promise.scala:5
-                                                  //| 8)
-                                                  //| 	at scala.concurrent.impl.Future$PromiseCompletingRunnable.run(Future.sca
-                                                  //| la:23)
-                                                  //| 	at scala.concurrent.impl.ExecutionContextImpl$$anon$3.exec(ExecutionCont
-                                                  //| extImpl.scala:107)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool
-                                                  //| .java:1339)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:19
-                                                  //| 79)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoin
-                                                  //| Output exceeds cutoff limit.
-   
+  def block() = Future {
+    val socket = Socket()
+		 val confirmation: Future[Array[Byte]] = for {
+		   packet <- socket.readFromMemory()
+		   confirmation <- socket.sentToEurope(packet)
+		 } yield confirmation
+     confirmation onComplete {
+       case Success(cf) => println("Confirmation: " ++ cf.toString)
+       case Failure(t) => println("Error: " ++ t.toString)
+     }
+  }                                               //> block: ()scala.concurrent.Future[Unit]
+  
+  (1 to 10 toList).foreach(e =>
+    Await.result(block(), 1 second)
+  )                                               //> Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
 }
