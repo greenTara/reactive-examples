@@ -25,7 +25,7 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   };$skip(429); 
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)
+  def eatenByMonster(a:Adventure) = (random < 0.3)
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   };System.out.println("""eatenByMonster: (a: nodescala.node2.Adventure)Boolean""");$skip(114); 
@@ -34,15 +34,15 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   object Diamond extends Treasure {
     val value = treasureCost
     override def toString = "Diamond"
-  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(295); 
+  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(293); 
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }
   
@@ -64,14 +64,21 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node2.Coin""");$skip(651); 
-
-  val adventure = Adventure();System.out.println("""adventure  : nodescala.node2.Adventure{def totalCoins(coins: List[nodescala.node2.Coin]): Int} = """ + $show(adventure ));$skip(56); 
-  val coins: Try[List[Coin]] = adventure.collectCoins();System.out.println("""coins  : scala.util.Try[List[nodescala.node2.Coin]] = """ + $show(coins ));$skip(215); 
-  val treasure: Try[Treasure] = coins match {
-   case Success(cs)          => adventure.buyTreasure(cs)
-   //case failure @ Failure(t) => failure  // This produces a type error.
-   case Failure(t) => Failure(t)
-  };System.out.println("""treasure  : scala.util.Try[nodescala.node2.Treasure] = """ + $show(treasure ))}
-   
+  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node2.Coin""");$skip(1118); 
+  
+  def block() = {
+	  val adventure = Adventure()
+	  val coins: Try[List[Coin]] = adventure.collectCoins()
+	  val treasure: Try[Treasure] = coins match {
+	   case Success(cs)          => adventure.buyTreasure(cs)
+	   //case failure @ Failure(t) => failure  // This produces a type error.
+	   case Failure(t) => Failure(t)
+	  }
+	  
+	  treasure match {
+	    case Success(tr)     => println("Treasure: " ++ tr.toString)
+	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	  }
+  };System.out.println("""block: ()Unit""");$skip(40); 
+  (1 to 10 toList).foreach(e =>block())}
 }

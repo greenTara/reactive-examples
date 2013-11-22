@@ -25,7 +25,7 @@ object node2 {
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node2.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node2.Adventure)Boolean
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   }
@@ -38,11 +38,11 @@ object node2 {
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node2.Coin
   
@@ -65,18 +65,29 @@ object node2 {
        }
     }
   }
-
-  val adventure = Adventure()                     //> adventure  : nodescala.node2.Adventure{def totalCoins(coins: List[nodescala
-                                                  //| .node2.Coin]): Int} = nodescala.node2$$anonfun$main$1$Adventure$3$$anon$1@1
-                                                  //| 81ca265
-  val coins: Try[List[Coin]] = adventure.collectCoins()
-                                                  //> coins  : scala.util.Try[List[nodescala.node2.Coin]] = Success(List(Gold(), 
-                                                  //| Silver(), Silver(), Silver(), Gold(), Silver(), Gold(), Gold(), Silver(), S
-                                                  //| ilver()))
-  val treasure: Try[Treasure] = coins match {
-   case Success(cs)          => adventure.buyTreasure(cs)
-   //case failure @ Failure(t) => failure  // This produces a type error.
-   case Failure(t) => Failure(t)
-  }                                               //> treasure  : scala.util.Try[nodescala.node2.Treasure] = Failure(Nice try!)
-   
+  
+  def block() = {
+	  val adventure = Adventure()
+	  val coins: Try[List[Coin]] = adventure.collectCoins()
+	  val treasure: Try[Treasure] = coins match {
+	   case Success(cs)          => adventure.buyTreasure(cs)
+	   //case failure @ Failure(t) => failure  // This produces a type error.
+	   case Failure(t) => Failure(t)
+	  }
+	  
+	  treasure match {
+	    case Success(tr)     => println("Treasure: " ++ tr.toString)
+	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	  }
+  }                                               //> block: ()Unit
+  (1 to 10 toList).foreach(e =>block())           //> Error Message: Nice try!
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Nice try!
+                                                  //| Error Message: Oooops
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Oooops
+                                                  //| Error Message: Oooops
+                                                  //| Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Treasure: Diamond
 }

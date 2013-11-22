@@ -24,7 +24,7 @@ object node4 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   };$skip(429); 
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)
+  def eatenByMonster(a:Adventure) = (random < 0.3)
   class GameOverException(msg: String) extends Error {
     override def toString = msg
   };System.out.println("""eatenByMonster: (a: nodescala.node4.Adventure)Boolean""");$skip(115); 
@@ -33,15 +33,15 @@ object node4 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   object Diamond extends Treasure {
     val value = treasureCost
     override def toString = "Diamond"
-  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(295); 
+  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(293); 
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }
   
@@ -63,12 +63,20 @@ object node4 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node4.Coin""");$skip(651); 
+  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node4.Coin""");$skip(984); 
 
-  val adventure = Adventure();System.out.println("""adventure  : nodescala.node4.Adventure{def totalCoins(coins: List[nodescala.node4.Coin]): Int} = """ + $show(adventure ));$skip(136); 
- val treasure: Try[Treasure] = for {
-   coins <- adventure.collectCoins()
-   treasure <- adventure.buyTreasure(coins)
- } yield treasure;System.out.println("""treasure  : scala.util.Try[nodescala.node4.Treasure] = """ + $show(treasure ))}
+  def block() = {
+	  val adventure = Adventure()
+	  val treasure: Try[Treasure] = for {
+	    coins <- adventure.collectCoins()
+	    treasure <- adventure.buyTreasure(coins)
+	  } yield treasure
+	   treasure match {
+	    case Success(tr)     => println("Treasure: " ++ tr.toString)
+	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	  }
+	  
+  };System.out.println("""block: ()Unit""");$skip(39); 
+ (1 to 10 toList).foreach(e =>block())}
    
 }

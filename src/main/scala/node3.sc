@@ -50,7 +50,7 @@ object node3 {
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node3.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node3.Adventure)Boolean
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   }
@@ -63,11 +63,11 @@ object node3 {
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node3.Coin
   
@@ -90,17 +90,25 @@ object node3 {
        }
     }
   }
-
-  val adventure = Adventure()                     //> adventure  : nodescala.node3.Adventure{def totalCoins(coins: List[nodescala
-                                                  //| .node3.Coin]): Int} = nodescala.node3$$anonfun$main$1$Adventure$3$$anon$1@2
-                                                  //| 009d3af
-  val coins: Try[List[Coin]] = adventure.collectCoins()
-                                                  //> coins  : nodescala.node3.Try[List[nodescala.node3.Coin]] = Success(List(Sil
-                                                  //| ver(), Silver(), Gold(), Silver(), Silver(), Gold(), Silver(), Gold(), Gold
-                                                  //| (), Silver()))
-  val treasure: Try[Treasure] = coins.flatMap(cs=>{adventure.buyTreasure(cs)})
-                                                  //> treasure  : nodescala.node3.Try[nodescala.node3.Treasure] = Failure(Nice tr
-                                                  //| y!)
+  def block() = {
+	  val adventure = Adventure()
+	  val coins: Try[List[Coin]] = adventure.collectCoins()
+	  val treasure: Try[Treasure] = coins.flatMap(cs=>{adventure.buyTreasure(cs)})
+	  treasure match {
+	    case Success(tr)     => println("Treasure: " ++ tr.toString)
+	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	  }
+	}                                         //> block: ()Unit
+  (1 to 10 toList).foreach(e =>block())           //> Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Nice try!
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Oooops
+                                                  //| Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Nice try!
+                                                  //| Error Message: Oooops
+                                                  //| Treasure: Diamond
 
 
    

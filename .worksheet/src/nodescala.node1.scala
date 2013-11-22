@@ -23,24 +23,25 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     def buyTreasure(coins: List[Coin]): Treasure
   };$skip(419); 
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)
+  def eatenByMonster(a:Adventure) = (random < 0.3)
+  
   class GameOverException(msg: String) extends Error{
     override def toString = msg
-  };System.out.println("""eatenByMonster: (a: nodescala.node1.Adventure)Boolean""");$skip(114); 
+  };System.out.println("""eatenByMonster: (a: nodescala.node1.Adventure)Boolean""");$skip(117); 
   val treasureCost = 50
   
   object Diamond extends Treasure {
     val value = treasureCost
     override def toString = "Diamond"
-  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(295); 
+  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(293); 
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }
   
@@ -62,11 +63,15 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node1.Coin""");$skip(633); 
-
-  val adventure = Adventure();System.out.println("""adventure  : nodescala.node1.Adventure{def totalCoins(coins: List[nodescala.node1.Coin]): Int} = """ + $show(adventure ));$skip(39); 
-  val coins = adventure.collectCoins();System.out.println("""coins  : List[nodescala.node1.Coin] = """ + $show(coins ));$skip(46); 
-  val treasure = adventure.buyTreasure(coins);System.out.println("""treasure  : nodescala.node1.Treasure = """ + $show(treasure ))}
-
+  };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node1.Coin""");$skip(791); 
+  
+  def block() = {
+	  val adventure = Adventure()
+	  val coins = adventure.collectCoins()
+	  val treasure = adventure.buyTreasure(coins)
+	  println("Treasure: " ++ treasure.toString)
+  };System.out.println("""block: ()Unit""");$skip(40); 
+  (1 to 10 toList).foreach(e =>block())}
+  
    
 }

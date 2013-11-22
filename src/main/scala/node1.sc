@@ -23,7 +23,8 @@ object node1 {
     def buyTreasure(coins: List[Coin]): Treasure
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
+  
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   }
@@ -36,11 +37,11 @@ object node1 {
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
-      Thread.sleep(1000)
+      Thread.sleep(100)
       new Gold
     }
     else {
-      Thread.sleep(100)
+      Thread.sleep(10)
       new Silver
     }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node1.Coin
   
@@ -63,13 +64,35 @@ object node1 {
        }
     }
   }
-
-  val adventure = Adventure()                     //> adventure  : nodescala.node1.Adventure{def totalCoins(coins: List[nodescala
-                                                  //| .node1.Coin]): Int} = nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1@2
-                                                  //| ee28063
-  val coins = adventure.collectCoins()            //> coins  : List[nodescala.node1.Coin] = List(Gold(), Gold(), Silver(), Silver
-                                                  //| (), Silver(), Gold(), Gold(), Silver(), Gold(), Gold())
-  val treasure = adventure.buyTreasure(coins)     //> treasure  : nodescala.node1.Treasure = Diamond
-
+  
+  def block() = {
+	  val adventure = Adventure()
+	  val coins = adventure.collectCoins()
+	  val treasure = adventure.buyTreasure(coins)
+	  println("Treasure: " ++ treasure.toString)
+  }                                               //> block: ()Unit
+  (1 to 10 toList).foreach(e =>block())           //> Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Oooops
+                                                  //| 	at nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1.collectCoins(node
+                                                  //| scala.node1.scala:52)
+                                                  //| 	at nodescala.node1$$anonfun$main$1.nodescala$node1$$anonfun$$block$1(nod
+                                                  //| escala.node1.scala:70)
+                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply$mcVI$sp
+                                                  //| (nodescala.node1.scala:74)
+                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(nodesca
+                                                  //| la.node1.scala:74)
+                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(nodesca
+                                                  //| la.node1.scala:74)
+                                                  //| 	at scala.collection.immutable.List.foreach(List.scala:318)
+                                                  //| 	at nodescala.node1$$anonfun$main$1.apply$mcV$sp(nodescala.node1.scala:74
+                                                  //| )
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
+                                                  //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
+                                                  //| orksheetSupport.scala:65)
+                                                  //| 	at org.scalaid
+                                                  //| Output exceeds cutoff limit.
+  
    
 }
