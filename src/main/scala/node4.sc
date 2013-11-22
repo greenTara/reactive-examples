@@ -25,7 +25,9 @@ object node4 {
   }
  
   def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node4.Adventure)Boolean
-  class GameOverException(msg: String) extends Error
+  class GameOverException(msg: String) extends Error {
+    override def toString = msg
+  }
   val treasureCost = 50                           //> treasureCost  : Int = 50
   
   object Diamond extends Treasure {
@@ -69,6 +71,6 @@ object node4 {
  val treasure: Try[Treasure] = for {
    coins <- adventure.collectCoins()
    treasure <- adventure.buyTreasure(coins)
- } yield treasure                                 //> treasure  : scala.util.Try[nodescala.node4.Treasure] = Success(Diamond)
+ } yield treasure                                 //> treasure  : scala.util.Try[nodescala.node4.Treasure] = Failure(Nice try!)
    
 }

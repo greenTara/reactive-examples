@@ -26,7 +26,9 @@ object node2 {
   }
  
   def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node2.Adventure)Boolean
-  class GameOverException(msg: String) extends Error
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  }
   val treasureCost = 50                           //> treasureCost  : Int = 50
   
   object Diamond extends Treasure {
@@ -68,13 +70,13 @@ object node2 {
                                                   //| .node2.Coin]): Int} = nodescala.node2$$anonfun$main$1$Adventure$3$$anon$1@1
                                                   //| 81ca265
   val coins: Try[List[Coin]] = adventure.collectCoins()
-                                                  //> coins  : scala.util.Try[List[nodescala.node2.Coin]] = Success(List(Silver()
-                                                  //| , Silver(), Gold(), Gold(), Silver(), Silver(), Gold(), Silver(), Silver(),
-                                                  //|  Silver()))
+                                                  //> coins  : scala.util.Try[List[nodescala.node2.Coin]] = Success(List(Gold(), 
+                                                  //| Silver(), Silver(), Silver(), Gold(), Silver(), Gold(), Gold(), Silver(), S
+                                                  //| ilver()))
   val treasure: Try[Treasure] = coins match {
    case Success(cs)          => adventure.buyTreasure(cs)
    //case failure @ Failure(t) => failure  // This produces a type error.
    case Failure(t) => Failure(t)
-  }                                               //
+  }                                               //> treasure  : scala.util.Try[nodescala.node2.Treasure] = Failure(Nice try!)
    
 }

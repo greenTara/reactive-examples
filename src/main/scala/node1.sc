@@ -24,7 +24,9 @@ object node1 {
   }
  
   def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
-  class GameOverException(msg: String) extends Error
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  }
   val treasureCost = 50                           //> treasureCost  : Int = 50
   
   object Diamond extends Treasure {
@@ -65,8 +67,8 @@ object node1 {
   val adventure = Adventure()                     //> adventure  : nodescala.node1.Adventure{def totalCoins(coins: List[nodescala
                                                   //| .node1.Coin]): Int} = nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1@2
                                                   //| ee28063
-  val coins = adventure.collectCoins()            //> coins  : List[nodescala.node1.Coin] = List(Gold(), Gold(), Gold(), Gold(), 
-                                                  //| Silver(), Silver(), Silver(), Gold(), Gold(), Gold())
+  val coins = adventure.collectCoins()            //> coins  : List[nodescala.node1.Coin] = List(Gold(), Gold(), Silver(), Silver
+                                                  //| (), Silver(), Gold(), Gold(), Silver(), Gold(), Gold())
   val treasure = adventure.buyTreasure(coins)     //> treasure  : nodescala.node1.Treasure = Diamond
 
    

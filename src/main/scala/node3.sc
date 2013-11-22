@@ -2,10 +2,35 @@ package nodescala
 
 
 import math.random
-import scala.util.{Try, Success, Failure}
+//import scala.util.{Try, Success, Failure}
 
 object node3 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
+  
+  abstract class Try[+T] {
+      def flatMap[S](f: T=>Try[S]): Try[S] = this match {
+		    case Success(value)   => f(value)
+		    //case Success(value)   => Try(f(value))
+		    //case Success(value)   => try {f(value) } catch { case t:Throwable => Failure(t)}
+		    case failure @ Failure(t)        => Failure(t)
+		  }
+  }
+  
+  case class Success[+T](elem: T) extends Try[T]
+  
+  case class Failure(t: Throwable) extends Try[Nothing]
+  
+  object Try {
+    def apply[T](r: =>T): Try[T] = {
+
+		  
+      try { Success(r) }
+      catch { case t:Throwable => Failure(t) }
+  
+    }
+  }
+  
+  
   abstract class Coin {
      val denomination: Int
   }
@@ -26,7 +51,9 @@ object node3 {
   }
  
   def eatenByMonster(a:Adventure) = (random < 0.1)//> eatenByMonster: (a: nodescala.node3.Adventure)Boolean
-  class GameOverException(msg: String) extends Error
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  }
   val treasureCost = 50                           //> treasureCost  : Int = 50
   
   object Diamond extends Treasure {
@@ -65,15 +92,16 @@ object node3 {
   }
 
   val adventure = Adventure()                     //> adventure  : nodescala.node3.Adventure{def totalCoins(coins: List[nodescala
-                                                  //| .node3.Coin]): Int} = nodescala.node3$$anonfun$main$1$Adventure$3$$anon$1@7
-                                                  //| d3e1384
+                                                  //| .node3.Coin]): Int} = nodescala.node3$$anonfun$main$1$Adventure$3$$anon$1@2
+                                                  //| 009d3af
   val coins: Try[List[Coin]] = adventure.collectCoins()
-                                                  //> coins  : scala.util.Try[List[nodescala.node3.Coin]] = Success(List(Gold(), 
-                                                  //| Gold(), Silver(), Silver(), Gold(), Silver(), Silver(), Silver(), Gold(), S
-                                                  //| ilver()))
+                                                  //> coins  : nodescala.node3.Try[List[nodescala.node3.Coin]] = Success(List(Sil
+                                                  //| ver(), Silver(), Gold(), Silver(), Silver(), Gold(), Silver(), Gold(), Gold
+                                                  //| (), Silver()))
   val treasure: Try[Treasure] = coins.flatMap(cs=>{adventure.buyTreasure(cs)})
-                                                  //> treasure  : scala.util.Try[nodescala.node3.Treasure] = Failure(nodescala.no
-                                                  //| de3$$anonfun$main$1$GameOverException$1)
+                                                  //> treasure  : nodescala.node3.Try[nodescala.node3.Treasure] = Failure(Nice tr
+                                                  //| y!)
+
 
    
 }

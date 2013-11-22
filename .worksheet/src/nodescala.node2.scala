@@ -26,7 +26,9 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   };$skip(429); 
  
   def eatenByMonster(a:Adventure) = (random < 0.1)
-  class GameOverException(msg: String) extends Error;System.out.println("""eatenByMonster: (a: nodescala.node2.Adventure)Boolean""");$skip(77); 
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  };System.out.println("""eatenByMonster: (a: nodescala.node2.Adventure)Boolean""");$skip(114); 
   val treasureCost = 50
   
   object Diamond extends Treasure {
@@ -71,6 +73,5 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    //case failure @ Failure(t) => failure  // This produces a type error.
    case Failure(t) => Failure(t)
   };System.out.println("""treasure  : scala.util.Try[nodescala.node2.Treasure] = """ + $show(treasure ))}
-
    
 }

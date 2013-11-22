@@ -2,10 +2,35 @@ package nodescala
 
 
 import math.random
-import scala.util.{Try, Success, Failure}
+//import scala.util.{Try, Success, Failure}
 
-object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(140); 
+object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(142); 
   println("Welcome to the Scala worksheet")
+  
+  abstract class Try[+T] {
+      def flatMap[S](f: T=>Try[S]): Try[S] = this match {
+		    case Success(value)   => f(value)
+		    //case Success(value)   => Try(f(value))
+		    //case Success(value)   => try {f(value) } catch { case t:Throwable => Failure(t)}
+		    case failure @ Failure(t)        => Failure(t)
+		  }
+  }
+  
+  case class Success[+T](elem: T) extends Try[T]
+  
+  case class Failure(t: Throwable) extends Try[Nothing]
+  
+  object Try {
+    def apply[T](r: =>T): Try[T] = {
+
+		  
+      try { Success(r) }
+      catch { case t:Throwable => Failure(t) }
+  
+    }
+  }
+  
+  
   abstract class Coin {
      val denomination: Int
   }
@@ -23,10 +48,12 @@ object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   trait Adventure {
     def collectCoins(): Try[List[Coin]]
     def buyTreasure(coins: List[Coin]): Try[Treasure]
-  };$skip(429); 
+  };$skip(1019); 
  
   def eatenByMonster(a:Adventure) = (random < 0.1)
-  class GameOverException(msg: String) extends Error;System.out.println("""eatenByMonster: (a: nodescala.node3.Adventure)Boolean""");$skip(77); 
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  };System.out.println("""eatenByMonster: (a: nodescala.node3.Adventure)Boolean""");$skip(114); 
   val treasureCost = 50
   
   object Diamond extends Treasure {
@@ -64,11 +91,10 @@ object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     }
   };System.out.println("""coinSource: (rand: Double, prob: Double)nodescala.node3.Coin""");$skip(651); 
 
-  val adventure = Adventure();System.out.println("""adventure  : nodescala.node3.Adventure{def totalCoins(coins: List[nodescala.node3.Coin]): Int} = """ + $show(adventure ));$skip(118); 
- val treasure: Try[Treasure] = for {
-   cs <- adventure.collectCoins()
-   tr <- adventure.buyTreasure(cs)
- } yield tr;System.out.println("""treasure  : scala.util.Try[nodescala.node3.Treasure] = """ + $show(treasure ))}
+  val adventure = Adventure();System.out.println("""adventure  : nodescala.node3.Adventure{def totalCoins(coins: List[nodescala.node3.Coin]): Int} = """ + $show(adventure ));$skip(56); 
+  val coins: Try[List[Coin]] = adventure.collectCoins();System.out.println("""coins  : nodescala.node3.Try[List[nodescala.node3.Coin]] = """ + $show(coins ));$skip(79); 
+  val treasure: Try[Treasure] = coins.flatMap(cs=>{adventure.buyTreasure(cs)});System.out.println("""treasure  : nodescala.node3.Try[nodescala.node3.Treasure] = """ + $show(treasure ))}
+
 
    
 }

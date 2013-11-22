@@ -24,7 +24,9 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   };$skip(419); 
  
   def eatenByMonster(a:Adventure) = (random < 0.1)
-  class GameOverException(msg: String) extends Error;System.out.println("""eatenByMonster: (a: nodescala.node1.Adventure)Boolean""");$skip(77); 
+  class GameOverException(msg: String) extends Error{
+    override def toString = msg
+  };System.out.println("""eatenByMonster: (a: nodescala.node1.Adventure)Boolean""");$skip(114); 
   val treasureCost = 50
   
   object Diamond extends Treasure {
