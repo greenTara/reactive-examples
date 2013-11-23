@@ -12,10 +12,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(43, 43)
+                                                  //> EMail1  : Array[Byte] = Array(64, 27)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(44, -8, 116, 16, 91, -31, 47, 29, 127, 96, -79
-                                                  //| )
+                                                  //> EMail2  : Array[Byte] = Array(110, -15, -80, 87, -36, 115, 30, -112, 36, 1, 
+                                                  //| -85)
     
   
   trait Socket {
@@ -69,7 +69,7 @@ object node6 {
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => println("Packet Read")
-      case Failure(t) => println("Error Message: " ++ t.toString)
+      case Failure(t: ExecutionException) => println(t.getCause())
     }
     packet onComplete {
       case Success(t) =>
@@ -82,30 +82,50 @@ object node6 {
     Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => println("Received")
-      case Failure(t) => println("Error Message: " ++ t.toString)
+      case Failure(t: ExecutionException) => println(t.getCause())
     }
     confirmation onComplete {
       case Success(t) =>
       case Failure(t) =>
     }
   }                                               //> block: ()Unit
-  (1 to 10 toList).foreach(e =>block())           //> Error Message: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+  (1 to 20 toList).foreach(e =>block())           //> Packet Read
+                                                  //| Received
+                                                  //| Oooops
+                                                  //| Oooops
                                                   //| Packet Read
                                                   //| Received
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Oooops
+                                                  //| Oooops
                                                   //| Packet Read
-                                                  //| Received
-                                                  //| Packet Read
-                                                  //| Received
-                                                  //| Packet Read
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Nice try!
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
+                                                  //| Received
+                                                  //| Oooops
+                                                  //| Oooops
+                                                  //| Oooops
+                                                  //| Oooops
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Oooops
+                                                  //| Oooops
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Oooops
+                                                  //| Oooops
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Packet Read
+                                                  //| Received
+                                                  //| Oooops
 }
