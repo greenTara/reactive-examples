@@ -12,10 +12,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(43, -68)
+                                                  //> EMail1  : Array[Byte] = Array(43, 43)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(119, 92, -18, -97, -84, -32, 94, 33, 79, 121, 
-                                                  //| 122)
+                                                  //> EMail2  : Array[Byte] = Array(44, -8, 116, 16, 91, -31, 47, 29, 127, 96, -79
+                                                  //| )
     
   
   trait Socket {
@@ -69,7 +69,7 @@ object node6 {
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => println("Packet Read")
-      case Failure(t) => println(t.toString)
+      case Failure(t) => println("Error Message: " ++ t.toString)
     }
     packet onComplete {
       case Success(t) =>
@@ -82,32 +82,30 @@ object node6 {
     Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => println("Received")
-      case Failure(t) => println(t.toString)
+      case Failure(t) => println("Error Message: " ++ t.toString)
     }
     confirmation onComplete {
       case Success(t) =>
       case Failure(t) =>
     }
   }                                               //> block: ()Unit
-  block()                                         //> java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| java.util.concurrent.ExecutionException: Boxed Error
-  (1 to 10 toList).foreach(e =>block())           //> Packet Read
+  (1 to 10 toList).foreach(e =>block())           //> Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Packet Read
                                                   //| Received
-                                                  //| java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
-                                                  //| java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
+                                                  //| Error Message: java.util.concurrent.ExecutionException: Boxed Error
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
-                                                  //| Received
-                                                  //| Packet Read
-                                                  //| Received
-                                                  //| java.util.concurrent.ExecutionException: Boxed Error
 }

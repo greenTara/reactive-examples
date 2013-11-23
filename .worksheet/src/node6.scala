@@ -57,7 +57,7 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(1184); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(1226); 
 
   def block() = {
     val socket = Socket()
@@ -65,7 +65,7 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => println("Packet Read")
-      case Failure(t) => println(t.toString)
+      case Failure(t) => println("Error Message: " ++ t.toString)
     }
     packet onComplete {
       case Success(t) =>
@@ -78,13 +78,12 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => println("Received")
-      case Failure(t) => println(t.toString)
+      case Failure(t) => println("Error Message: " ++ t.toString)
     }
     confirmation onComplete {
       case Success(t) =>
       case Failure(t) =>
     }
-  };System.out.println("""block: ()Unit""");$skip(10); 
-  block();$skip(40); 
+  };System.out.println("""block: ()Unit""");$skip(40); 
   (1 to 10 toList).foreach(e =>block())}
 }

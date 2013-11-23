@@ -12,10 +12,10 @@ object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-101, 107)
+                                                  //> EMail1  : Array[Byte] = Array(127, 83)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-68, -94, 50, -14, 46, 34, 28, -50, -103, 84, 
-                                                  //| -91)
+                                                  //> EMail2  : Array[Byte] = Array(-128, -113, -70, 70, -36, 31, -103, 116, 63, -
+                                                  //| 14, 56)
     
   
   trait Socket {
@@ -71,6 +71,7 @@ object node5 {
     packet.value                                  //> res1: Option[scala.util.Try[Array[Byte]]] = Some(Success([B@1daadbf7))
     packet.isCompleted                            //> res2: Boolean = true
 
+
     packet onComplete {
       case Success(p) => {
         println("Packet Read")
@@ -81,7 +82,7 @@ object node5 {
           case Success(cf) => println("Confirmation: " ++ cf.toString)
           case Failure(t) => println("Error: " ++ t.toString)
         }
-		    packet onComplete {
+		    confirmation onComplete {
 		      case Success(p) =>
 		  		case Failure(t) =>
 		    }

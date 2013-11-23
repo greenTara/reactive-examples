@@ -63,7 +63,8 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     val packet = socket.readFromMemory();System.out.println("""packet  : scala.concurrent.Future[Array[Byte]] = """ + $show(packet ));$skip(34); val res$0 = 
     Await.ready(packet, 1 second);System.out.println("""res0: node5.packet.type = """ + $show(res$0));$skip(17); val res$1 = 
     packet.value;System.out.println("""res1: Option[scala.util.Try[Array[Byte]]] = """ + $show(res$1));$skip(23); val res$2 = 
-    packet.isCompleted;System.out.println("""res2: Boolean = """ + $show(res$2));$skip(579); 
+    packet.isCompleted;System.out.println("""res2: Boolean = """ + $show(res$2));$skip(586); 
+
 
     packet onComplete {
       case Success(p) => {
@@ -75,7 +76,7 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
           case Success(cf) => println("Confirmation: " ++ cf.toString)
           case Failure(t) => println("Error: " ++ t.toString)
         }
-		    packet onComplete {
+		    confirmation onComplete {
 		      case Success(p) =>
 		  		case Failure(t) =>
 		    }
