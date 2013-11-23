@@ -1,8 +1,8 @@
 import math.random
 import scala.util.{Try, Success, Failure}
 
-object node4 {
-  println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
+object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(120); 
+  println("Welcome to the Scala worksheet")
   abstract class Coin {
      val denomination: Int
   }
@@ -20,18 +20,18 @@ object node4 {
   trait Adventure {
     def collectCoins(): Try[List[Coin]]
     def buyTreasure(coins: List[Coin]): Try[Treasure]
-  }
+  };$skip(429); 
  
-  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: node4.Adventure)Boolean
-  class GameOverException(msg: String) extends Error {
+  def eatenByMonster(a:Adventure) = (random < 0.3)
+  class GameOverException(msg: String) extends Error{
     override def toString = msg
-  }
-  val treasureCost = 50                           //> treasureCost  : Int = 50
+  };System.out.println("""eatenByMonster: (a: node2.Adventure)Boolean""");$skip(114); 
+  val treasureCost = 50
   
   object Diamond extends Treasure {
     val value = treasureCost
     override def toString = "Diamond"
-  }
+  };System.out.println("""treasureCost  : Int = """ + $show(treasureCost ));$skip(293); 
    
   def coinSource(rand: Double, prob: Double ): Coin =
     if (rand < prob) {
@@ -41,7 +41,7 @@ object node4 {
     else {
       Thread.sleep(10)
       new Silver
-    }                                             //> coinSource: (rand: Double, prob: Double)node4.Coin
+    }
   
   object Adventure {
     def apply() = new Adventure {
@@ -61,29 +61,21 @@ object node4 {
            Diamond
        }
     }
-  }
-
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node2.Coin""");$skip(1118); 
+  
   def block() = {
 	  val adventure = Adventure()
-	  val treasure: Try[Treasure] = for {
-	    coins <- adventure.collectCoins()
-	    treasure <- adventure.buyTreasure(coins)
-	  } yield treasure
-	   treasure match {
+	  val coins: Try[List[Coin]] = adventure.collectCoins()
+	  val treasure: Try[Treasure] = coins match {
+	   case Success(cs)          => adventure.buyTreasure(cs)
+	   //case failure @ Failure(t) => failure  // This produces a type error.
+	   case Failure(t) => Failure(t)
+	  }
+	  
+	  treasure match {
 	    case Success(tr)     => println("Treasure: " ++ tr.toString)
 	    case Failure(t)      => println("Error Message: " ++ t.toString)
 	  }
-	  
-  }                                               //> block: ()Unit
- (1 to 10 toList).foreach(e =>block())            //> Error Message: Nice try!
-                                                  //| Treasure: Diamond
-                                                  //| Error Message: Oooops
-                                                  //| Treasure: Diamond
-                                                  //| Error Message: Oooops
-                                                  //| Error Message: Nice try!
-                                                  //| Error Message: Nice try!
-                                                  //| Error Message: Nice try!
-                                                  //| Treasure: Diamond
-                                                  //| Treasure: Diamond
-   
+  };System.out.println("""block: ()Unit""");$skip(40); 
+  (1 to 10 toList).foreach(e =>block())}
 }

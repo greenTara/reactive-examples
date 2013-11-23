@@ -1,6 +1,3 @@
-package nodescala
-
-
 import math.random
 import scala.util.{Try, Success, Failure}
 
@@ -25,7 +22,7 @@ object node2 {
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node2.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: node2.Adventure)Boolean
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   }
@@ -44,7 +41,7 @@ object node2 {
     else {
       Thread.sleep(10)
       new Silver
-    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node2.Coin
+    }                                             //> coinSource: (rand: Double, prob: Double)node2.Coin
   
   object Adventure {
     def apply() = new Adventure {
@@ -80,14 +77,14 @@ object node2 {
 	    case Failure(t)      => println("Error Message: " ++ t.toString)
 	  }
   }                                               //> block: ()Unit
-  (1 to 10 toList).foreach(e =>block())           //> Error Message: Nice try!
-                                                  //| Treasure: Diamond
+  (1 to 10 toList).foreach(e =>block())           //> Error Message: Oooops
                                                   //| Error Message: Nice try!
                                                   //| Error Message: Oooops
                                                   //| Treasure: Diamond
-                                                  //| Error Message: Oooops
-                                                  //| Error Message: Oooops
                                                   //| Treasure: Diamond
                                                   //| Treasure: Diamond
                                                   //| Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Treasure: Diamond
+                                                  //| Error Message: Nice try!
 }

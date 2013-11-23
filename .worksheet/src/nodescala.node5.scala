@@ -11,10 +11,10 @@ import ExecutionContext.Implicits.global
 
 
 object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(302); 
-  println("Welcome to the Scala worksheet");$skip(72); 
+  println("Welcome to the Scala worksheet");$skip(70); 
 
-    val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray;System.out.println("""EMail1  : Array[Byte] = """ + $show(EMail1 ));$skip(72); 
-    val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
+  val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray;System.out.println("""EMail1  : Array[Byte] = """ + $show(EMail1 ));$skip(70); 
+  val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
     
   
   trait Socket {

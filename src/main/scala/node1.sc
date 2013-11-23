@@ -1,5 +1,3 @@
-package nodescala
-
 import math.random
 
 object node1 {
@@ -23,7 +21,7 @@ object node1 {
     def buyTreasure(coins: List[Coin]): Treasure
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node1.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: node1.Adventure)Boolean
   
   class GameOverException(msg: String) extends Error{
     override def toString = msg
@@ -43,7 +41,7 @@ object node1 {
     else {
       Thread.sleep(10)
       new Silver
-    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node1.Coin
+    }                                             //> coinSource: (rand: Double, prob: Double)node1.Coin
   
   object Adventure {
     def apply() = new Adventure {
@@ -71,28 +69,24 @@ object node1 {
 	  val treasure = adventure.buyTreasure(coins)
 	  println("Treasure: " ++ treasure.toString)
   }                                               //> block: ()Unit
-  (1 to 10 toList).foreach(e =>block())           //> Treasure: Diamond
-                                                  //| Treasure: Diamond
-                                                  //| Oooops
-                                                  //| 	at nodescala.node1$$anonfun$main$1$Adventure$3$$anon$1.collectCoins(node
-                                                  //| scala.node1.scala:52)
-                                                  //| 	at nodescala.node1$$anonfun$main$1.nodescala$node1$$anonfun$$block$1(nod
-                                                  //| escala.node1.scala:70)
-                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply$mcVI$sp
-                                                  //| (nodescala.node1.scala:74)
-                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(nodesca
-                                                  //| la.node1.scala:74)
-                                                  //| 	at nodescala.node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(nodesca
-                                                  //| la.node1.scala:74)
+  (1 to 10 toList).foreach(e =>block())           //> Nice try!
+                                                  //| 	at node1$$anonfun$main$1$Adventure$3$$anon$1.buyTreasure(node1.scala:59)
+                                                  //| 
+                                                  //| 	at node1$$anonfun$main$1.node1$$anonfun$$block$1(node1.scala:69)
+                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply$mcVI$sp(node1.sca
+                                                  //| la:72)
+                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:72)
+                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:72)
                                                   //| 	at scala.collection.immutable.List.foreach(List.scala:318)
-                                                  //| 	at nodescala.node1$$anonfun$main$1.apply$mcV$sp(nodescala.node1.scala:74
-                                                  //| )
+                                                  //| 	at node1$$anonfun$main$1.apply$mcV$sp(node1.scala:72)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
                                                   //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
                                                   //| orksheetSupport.scala:65)
-                                                  //| 	at org.scalaid
-                                                  //| Output exceeds cutoff limit.
+                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
+                                                  //| ksheetSupport.scala:75)
+                                                  //| 	at node1$.main(node1.scala:3)
+                                                  //| 	at node1.main(node1.scala)
   
    
 }

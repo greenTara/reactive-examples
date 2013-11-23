@@ -1,6 +1,3 @@
-package nodescala
-
-
 import math.random
 //import scala.util.{Try, Success, Failure}
 
@@ -50,7 +47,7 @@ object node3 {
     def buyTreasure(coins: List[Coin]): Try[Treasure]
   }
  
-  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: nodescala.node3.Adventure)Boolean
+  def eatenByMonster(a:Adventure) = (random < 0.3)//> eatenByMonster: (a: node3.Adventure)Boolean
   class GameOverException(msg: String) extends Error{
     override def toString = msg
   }
@@ -69,7 +66,7 @@ object node3 {
     else {
       Thread.sleep(10)
       new Silver
-    }                                             //> coinSource: (rand: Double, prob: Double)nodescala.node3.Coin
+    }                                             //> coinSource: (rand: Double, prob: Double)node3.Coin
   
   object Adventure {
     def apply() = new Adventure {
@@ -99,14 +96,14 @@ object node3 {
 	    case Failure(t)      => println("Error Message: " ++ t.toString)
 	  }
 	}                                         //> block: ()Unit
-  (1 to 10 toList).foreach(e =>block())           //> Treasure: Diamond
-                                                  //| Treasure: Diamond
+  (1 to 10 toList).foreach(e =>block())           //> Error Message: Nice try!
                                                   //| Error Message: Nice try!
                                                   //| Treasure: Diamond
+                                                  //| Error Message: Nice try!
+                                                  //| Error Message: Nice try!
+                                                  //| Error Message: Oooops
                                                   //| Error Message: Oooops
                                                   //| Treasure: Diamond
-                                                  //| Treasure: Diamond
-                                                  //| Error Message: Nice try!
                                                   //| Error Message: Oooops
                                                   //| Treasure: Diamond
 

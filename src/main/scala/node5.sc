@@ -1,5 +1,3 @@
-package nodescala
-
 import math.random
 import scala.language.postfixOps
 import scala.util._
@@ -13,11 +11,11 @@ import ExecutionContext.Implicits.global
 object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
-    val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-30, 58)
-    val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-126, -59, 123, 34, 53, -34, 0, -74, -62, -2, 
-                                                  //| -73)
+  val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
+                                                  //> EMail1  : Array[Byte] = Array(56, 7)
+  val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
+                                                  //> EMail2  : Array[Byte] = Array(-63, -103, 73, -120, -30, -7, 102, -116, 33, 4
+                                                  //| , -46)
     
   
   trait Socket {
@@ -25,7 +23,7 @@ object node5 {
     def sentToEurope(packet: Array[Byte]): Future[Array[Byte]]
   }
  
-  def disconnect(a:Socket) = (random < 0.3)       //> disconnect: (a: nodescala.node5.Socket)Boolean
+  def disconnect(a:Socket) = (random < 0)         //> disconnect: (a: node5.Socket)Boolean
   class InputException(msg: String) extends Error{
     override def toString = msg
   }
@@ -65,25 +63,26 @@ object node5 {
     }
   }
 
-  def block() = Future {
-    val socket = Socket()
-		 val confirmation: Future[Array[Byte]] = for {
-		   packet <- socket.readFromMemory()
-		   confirmation <- socket.sentToEurope(packet)
-		 } yield confirmation
-     confirmation onComplete {
-       case Success(cf) => println("Confirmation: " ++ cf.toString)
-       case Failure(t) => println("Error: " ++ t.toString)
-     }
-  }                                               //> block: ()scala.concurrent.Future[Unit]
-  
-  (1 to 10 toList).foreach(e =>
-    Await.result(block(), 1 second)
-  )                                               //> Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
-                                                  //| Error: java.util.concurrent.ExecutionException: Boxed Error
+    val socket = Socket()                         //> socket  : node5.Socket = node5$$anonfun$main$1$Socket$3$$anon$1@764985ce
+    val packet = socket.readFromMemory()          //> packet  : scala.concurrent.Future[Array[Byte]] = scala.concurrent.impl.Prom
+                                                  //| ise$DefaultPromise@696564b8
+    Await.ready(packet, 1 second)                 //> res0: node5.packet.type = scala.concurrent.impl.Promise$DefaultPromise@6965
+                                                  //| 64b8
+    packet.value                                  //> res1: Option[scala.util.Try[Array[Byte]]] = Some(Success([B@659a1fae))
+    packet.isCompleted                            //> res2: Boolean = true
+    packet.onFailure {case t => println("No Packet Read")}
+    packet.onSuccess {case t => println("Packet Read")}
+    packet onComplete {
+      case Success(p) => {
+        println("Packet Read")
+  		  val confirmation: Future[Array[Byte]] =  socket.sentToEurope(p)
+        confirmation onComplete {
+          case Success(cf) => println("Confirmation: " ++ cf.toString)
+          case Failure(t) => println("Error: " ++ t.toString)
+        }
+  		}
+  		case Failure(t) => {
+  		          println("No Packet Read")
+  		}
+    }
 }
