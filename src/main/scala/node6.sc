@@ -12,10 +12,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(64, 27)
+                                                  //> EMail1  : Array[Byte] = Array(53, -89)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(110, -15, -80, 87, -36, 115, 30, -112, 36, 1, 
-                                                  //| -85)
+                                                  //> EMail2  : Array[Byte] = Array(-96, -88, 19, -97, -116, -4, -22, -88, 97, -6,
+                                                  //|  94)
     
   
   trait Socket {
@@ -69,7 +69,7 @@ object node6 {
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => println("Packet Read")
-      case Failure(t: ExecutionException) => println(t.getCause())
+      case Failure(t: ExecutionException) => println("Error message: " ++ t.getCause().toString)
     }
     packet onComplete {
       case Success(t) =>
@@ -82,7 +82,7 @@ object node6 {
     Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => println("Received")
-      case Failure(t: ExecutionException) => println(t.getCause())
+      case Failure(t: ExecutionException) => println("Error message: " ++ t.getCause().toString)
     }
     confirmation onComplete {
       case Success(t) =>
@@ -90,33 +90,29 @@ object node6 {
     }
   }                                               //> block: ()Unit
   (1 to 20 toList).foreach(e =>block())           //> Packet Read
-                                                  //| Received
-                                                  //| Oooops
-                                                  //| Oooops
-                                                  //| Packet Read
-                                                  //| Received
-                                                  //| Oooops
-                                                  //| Oooops
-                                                  //| Packet Read
-                                                  //| Nice try!
+                                                  //| Error message: Nice try!
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
-                                                  //| Oooops
-                                                  //| Oooops
-                                                  //| Oooops
-                                                  //| Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
                                                   //| Packet Read
                                                   //| Received
-                                                  //| Oooops
-                                                  //| Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
                                                   //| Packet Read
                                                   //| Received
-                                                  //| Oooops
-                                                  //| Oooops
+                                                  //| Packet Read
+                                                  //| Error message: Nice try!
+                                                  //| Packet Read
+                                                  //| Error message: Nice try!
                                                   //| Packet Read
                                                   //| Received
                                                   //| Packet Read
@@ -127,5 +123,10 @@ object node6 {
                                                   //| Received
                                                   //| Packet Read
                                                   //| Received
-                                                  //| Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Error message: Oooops
+                                                  //| Packet Read
+                                                  //| Received
 }

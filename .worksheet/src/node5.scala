@@ -57,36 +57,37 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(539); 
-
-    val socket = Socket();System.out.println("""socket  : node5.Socket = """ + $show(socket ));$skip(41); 
-    val packet = socket.readFromMemory();System.out.println("""packet  : scala.concurrent.Future[Array[Byte]] = """ + $show(packet ));$skip(34); val res$0 = 
-    Await.ready(packet, 1 second);System.out.println("""res0: node5.packet.type = """ + $show(res$0));$skip(17); val res$1 = 
-    packet.value;System.out.println("""res1: Option[scala.util.Try[Array[Byte]]] = """ + $show(res$1));$skip(23); val res$2 = 
-    packet.isCompleted;System.out.println("""res2: Boolean = """ + $show(res$2));$skip(586); 
-
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(1473); 
+  def block(i:Int) = {
+    println("Iteration: " ++ i.toString)
+    val socket = Socket()
+    val packet = socket.readFromMemory()
+    Await.ready(packet, 1 second)
 
     packet onComplete {
       case Success(p) => {
-        println("Packet Read")
+        println("Packet Read: " ++ i.toString)
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
   		  Await.ready(confirmation, 1 second)
-        println("Confirmation Ready")
+        println("Confirmation Ready: " ++ i.toString)
         confirmation onComplete {
-          case Success(cf) => println("Confirmation: " ++ cf.toString)
-          case Failure(t) => println("Error: " ++ t.toString)
+          case Success(cf) => println("Confirmation: Received " ++ i.toString)
+          case Failure(t: ExecutionException) => println("Error message: " ++ t.getCause().toString)
         }
 		    confirmation onComplete {
 		      case Success(p) =>
 		  		case Failure(t) =>
 		    }
   		}
-  		case Failure(t) => {
-  		          println("No Packet Read")
-  		}
-    };$skip(78); 
+      case Failure(t: ExecutionException) => {
+        println("Error message: " ++ t.getCause().toString)
+      }
+    }
     packet onComplete {
       case Success(p) =>
   		case Failure(t) =>
-    }}
+    }
+    
+   };System.out.println("""block: (i: Int)Unit""");$skip(41); 
+   (1 to 5 toList).foreach(i =>block(i))}
 }

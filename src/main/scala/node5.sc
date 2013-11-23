@@ -12,10 +12,10 @@ object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(127, 83)
+                                                  //> EMail1  : Array[Byte] = Array(-54, -117)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-128, -113, -70, 70, -36, 31, -103, 116, 63, -
-                                                  //| 14, 56)
+                                                  //> EMail2  : Array[Byte] = Array(101, 67, 48, 99, 9, -85, -98, 82, -93, 44, 57)
+                                                  //| 
     
   
   trait Socket {
@@ -62,37 +62,48 @@ object node5 {
        }
     }
   }
-
-    val socket = Socket()                         //> socket  : node5.Socket = node5$$anonfun$main$1$Socket$3$$anon$1@77a172dc
-    val packet = socket.readFromMemory()          //> packet  : scala.concurrent.Future[Array[Byte]] = scala.concurrent.impl.Prom
-                                                  //| ise$DefaultPromise@609fc98
-    Await.ready(packet, 1 second)                 //> res0: node5.packet.type = scala.concurrent.impl.Promise$DefaultPromise@609f
-                                                  //| c98
-    packet.value                                  //> res1: Option[scala.util.Try[Array[Byte]]] = Some(Success([B@1daadbf7))
-    packet.isCompleted                            //> res2: Boolean = true
-
+  def block(i:Int) = {
+    println("Iteration: " ++ i.toString)
+    val socket = Socket()
+    val packet = socket.readFromMemory()
+    Await.ready(packet, 1 second)
 
     packet onComplete {
       case Success(p) => {
-        println("Packet Read")
+        println("Packet Read: " ++ i.toString)
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
   		  Await.ready(confirmation, 1 second)
-        println("Confirmation Ready")
+        println("Confirmation Ready: " ++ i.toString)
         confirmation onComplete {
-          case Success(cf) => println("Confirmation: " ++ cf.toString)
-          case Failure(t) => println("Error: " ++ t.toString)
+          case Success(cf) => println("Confirmation: Received " ++ i.toString)
+          case Failure(t: ExecutionException) => println("Error message: " ++ t.getCause().toString)
         }
 		    confirmation onComplete {
 		      case Success(p) =>
 		  		case Failure(t) =>
 		    }
   		}
-  		case Failure(t) => {
-  		          println("No Packet Read")
-  		}
+      case Failure(t: ExecutionException) => {
+        println("Error message: " ++ t.getCause().toString)
+      }
     }
     packet onComplete {
       case Success(p) =>
   		case Failure(t) =>
-    }                                             //> Packet Read
+    }
+    
+   }                                              //> block: (i: Int)Unit
+   (1 to 5 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Error message: Oooops
+                                                  //| Iteration: 2
+                                                  //| Iteration: 3
+                                                  //| Packet Read: 2
+                                                  //| Confirmation Ready: 2
+                                                  //| Error message: Nice try!
+                                                  //| Packet Read: 3
+                                                  //| Iteration: 4
+                                                  //| Confirmation Ready: 3
+                                                  //| Confirmation: Received 3
+                                                  //| Iteration: 5
+                                                  //| Packet Read: 4
 }
