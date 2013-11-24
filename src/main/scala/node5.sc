@@ -19,10 +19,10 @@ object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(0, 115)
+                                                  //> EMail1  : Array[Byte] = Array(-26, -68)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-62, 103, -68, 94, -7, 3, 71, -59, 58, -71, 18
-                                                  //| )
+                                                  //> EMail2  : Array[Byte] = Array(8, 53, 9, 98, -127, -74, -76, -98, -126, -39, 
+                                                  //| 49)
     
   
   trait Socket {
@@ -56,10 +56,10 @@ object node5 {
       EMail1
     }                                             //> packetSource: (rand: Double, prob: Double)Array[Byte]
   
-  object Socket {
+  object MySocket {
     /* The anonymous class syntax is used here,
-    * allowing us to create a companion object
-    * for a trait with undefined members.
+    * allowing us to instantiate an object
+    * that extends a trait with undefined members.
     */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
@@ -85,8 +85,11 @@ object node5 {
   }
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = Socket()
+    val socket = MySocket()
     val packet = socket.readFromMemory()
+    /* Although the Await.ready method is blocking, the internal use of blocking ensures
+    * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    */
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(p) => {
@@ -129,32 +132,27 @@ object node5 {
    */
    (1 to 8 toList).foreach(i =>block(i))          //> Iteration: 1
                                                   //| Iteration: 2
-                                                  //| Packet Read: 1
-                                                  //| Testing: true 1
-                                                  //| Confirmation Ready: 1
-                                                  //| Error message: Nice try! 1
+                                                  //| Error message: Oooops 1
                                                   //| Iteration: 3
                                                   //| Packet Read: 2
-                                                  //| Iteration: 4
-                                                  //| Error message: Oooops 3
                                                   //| Testing: true 2
                                                   //| Confirmation Ready: 2
-                                                  //| Error message: Nice try! 2
+                                                  //| Confirmation: Received 2
+                                                  //| Iteration: 4
+                                                  //| Packet Read: 3
+                                                  //| Testing: true 3
+                                                  //| Confirmation Ready: 3
+                                                  //| Error message: Nice try! 3
                                                   //| Iteration: 5
                                                   //| Packet Read: 4
-                                                  //| Testing: true 4
-                                                  //| Confirmation Ready: 4
-                                                  //| Error message: Nice try! 4
+                                                  //| Error message: Oooops 5
                                                   //| Iteration: 6
-                                                  //| Packet Read: 5
-                                                  //| Error message: Oooops 6
-                                                  //| Testing: true 5
+                                                  //| Testing: true 4
                                                   //| Iteration: 7
-                                                  //| Confirmation Ready: 5
-                                                  //| Error message: Nice try! 5
+                                                  //| Error message: Oooops 6
+                                                  //| Confirmation Ready: 4
+                                                  //| Confirmation: Received 4
                                                   //| Iteration: 8
                                                   //| Packet Read: 7
-                                                  //| Testing: true 7
-                                                  //| Confirmation Ready: 7
-                                                  //| Error message: Nice try! 7
+                                                  //| Error message: Oooops 8
 }

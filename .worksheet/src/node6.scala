@@ -52,7 +52,11 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       EMail1
     }
   
-  object Socket {
+  object MySocket {
+    /* The anonymous class syntax is used here,
+    * allowing us to instantiate an object
+    * that extends a trait with undefined members.
+    */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
          if (disconnect(this))
@@ -73,12 +77,15 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(1872); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2210); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = Socket()
+    val socket = MySocket()
     val packet = socket.readFromMemory()
+     /* Although the Await.ready method is blocking, the internal use of blocking ensures
+    * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    */
     Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => {
