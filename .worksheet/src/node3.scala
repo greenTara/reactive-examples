@@ -1,15 +1,23 @@
 import math.random
+/* This worksheet demonstrates some of the code snippets from
+* Week3, Lecture 1, "Monads and Effects", particularly slides 12 and 15 (Quiz).
+* "flatMap is the plumber for the happy path."
+*/
+
+/* We define our own Try, Success and Failure in order to experiment
+* with the alternate definitions of flatMap proposed in the Quiz.
+*/
 //import scala.util.{Try, Success, Failure}
 
-object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(122); 
+object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(453); 
   println("Welcome to the Scala worksheet")
   
   abstract class Try[+T] {
       def flatMap[S](f: T=>Try[S]): Try[S] = this match {
-		    case Success(value)   => f(value)
-		    //case Success(value)   => Try(f(value))
-		    //case Success(value)   => try {f(value) } catch { case t:Throwable => Failure(t)}
-		    case failure @ Failure(t)        => Failure(t)
+		    case Success(value)   => f(value)  //(a)
+		    //case Success(value)   => Try(f(value)) //(b)
+		    //case Success(value)   => try {f(value) } catch { case t:Throwable => Failure(t)} //(c)
+		    case failure @ Failure(t)        => Failure(t) //fixed typo
 		  }
   }
   
@@ -45,7 +53,7 @@ object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
   trait Adventure {
     def collectCoins(): Try[List[Coin]]
     def buyTreasure(coins: List[Coin]): Try[Treasure]
-  };$skip(1019); 
+  };$skip(1051); 
  
   def eatenByMonster(a:Adventure) = (random < 0.3)
   class GameOverException(msg: String) extends Error{
@@ -68,7 +76,16 @@ object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       new Silver
     }
   
-  object Adventure {
+  object AdventureFactory {
+    /* The anonymous class syntax is used for this factory object,
+    * allowing us to instantiate an object
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * AdventureFactory() is desugared to
+    * AdventureFactory.apply()
+    */
     def apply() = new Adventure {
        def collectCoins(): Try[List[Coin]] = Try {
          if (eatenByMonster(this))
@@ -86,17 +103,25 @@ object node3 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)node3.Coin""");$skip(1052); 
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node3.Coin""");$skip(1538); 
+  /* Exception handling with flatMap.
+  */
   def block(i: Int) = {
     println("Iteration: " + i.toString)
-	  val adventure = Adventure()
-	  val coins: Try[List[Coin]] = adventure.collectCoins()
-	  val treasure: Try[Treasure] = coins.flatMap(cs=>{adventure.buyTreasure(cs)})
-	  treasure match {
-	    case Success(tr)     => println("Treasure: " + tr.toString + " " + i.toString)
+	  val adventure: Adventure = AdventureFactory()
+	  val tryCoins: Try[List[Coin]] = adventure.collectCoins()
+	  val tryTreasure: Try[Treasure] = tryCoins.flatMap(coins=>{adventure.buyTreasure(coins)})
+	  tryTreasure match {
+	    case Success(treasure)     => println("Treasure: " + treasure.toString + " " + i.toString)
 	    case Failure(t)      => println("Error Message: " + t.toString + " " + i.toString)
 	  }
-	};System.out.println("""block: (i: Int)Unit""");$skip(41); 
+	};System.out.println("""block: (i: Int)Unit""");$skip(355); 
+  /* Multiple executions of a block of commands where
+   * each block contains one collectCoins and
+   * one buyTreasure. If either call fails, the whole iteration does not fail,
+   * because we are catching exceptions (with flatMap) in this implementation.
+   * Note that these blocks execute synchrounsly.
+   */
   (1 to 10 toList).foreach(i =>block(i))}
 
 

@@ -77,16 +77,18 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2210); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2302); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
     val socket = MySocket()
     val packet = socket.readFromMemory()
-     /* Although the Await.ready method is blocking, the internal use of blocking ensures
+    /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    * You can uncomment this line to slow down the rate at which new asynchronous
+    * computations are spawned by the iteration.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => {
         println("Packet Read: " + i.toString)
@@ -100,7 +102,6 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       packet.flatMap(p => {
         socket.sendToEurope(p)
         })
-    Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => {
         println("Received " + i.toString)
@@ -127,5 +128,7 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-  (1 to 8 toList).foreach(i =>block(i))}
+  (1 to 8 toList).foreach(i =>block(i));$skip(31); 
+  blocking{Thread.sleep(3000)}}
+  
 }

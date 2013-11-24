@@ -1,6 +1,11 @@
 import math.random
 import scala.util.{Try, Success, Failure}
 
+/* This worksheet demonstrates some of the code snippets from
+* Week3, Lecture 1, "Monads and Effects", particularly slides 8-9.
+* Explicit case matching for Success and Failure is used
+* to handle the exceoptions.
+*/
 object node2 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   abstract class Coin {
@@ -43,7 +48,16 @@ object node2 {
       new Silver
     }                                             //> coinSource: (rand: Double, prob: Double)node2.Coin
   
-  object Adventure {
+  object AdventureFactory {
+    /* The anonymous class syntax is used for this factory object,
+    * allowing us to instantiate an object
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * AdventureFactory() is desugared to
+    * AdventureFactory.apply()
+    */
     def apply() = new Adventure {
        def collectCoins(): Try[List[Coin]] = Try {
          if (eatenByMonster(this))
@@ -62,40 +76,48 @@ object node2 {
        }
     }
   }
-  
+  /* Exception handling with an explicit case match
+  * to Success or Failure.
+  */
   def block(i: Int) = {
     println("Iteration: " + i.toString)
-	  val adventure = Adventure()
-	  val coins: Try[List[Coin]] = adventure.collectCoins()
-	  val treasure: Try[Treasure] = coins match {
-	   case Success(cs)          => adventure.buyTreasure(cs)
+	  val adventure: Adventure = AdventureFactory()
+	  val tryCoins: Try[List[Coin]] = adventure.collectCoins()
+	  val tryTreasure: Try[Treasure] = tryCoins match {
+	   case Success(coins)          => adventure.buyTreasure(coins)
 	   //case failure @ Failure(t) => failure  // This produces a type error.
 	   case Failure(t) => Failure(t)
 	  }
 	  
-	  treasure match {
-	    case Success(tr)     => println("Treasure: " + tr.toString + " " + i.toString)
+	  tryTreasure match {
+	    case Success(treasure)     => println("Treasure: " + treasure.toString + " " + i.toString)
 	    case Failure(t)      => println("Error Message: " + t.toString + " " + i.toString)
 	  }
   }                                               //> block: (i: Int)Unit
+  /* Multiple executions of a block of commands where
+   * each block contains one collectCoins and
+   * one buyTreasure. If either call fails, the whole iteration does not fail,
+   * because we are catching exceptions in this implementation.
+   * Note that these blocks execute synchrounsly.
+   */
   (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
                                                   //| Treasure: Diamond 1
                                                   //| Iteration: 2
-                                                  //| Treasure: Diamond 2
+                                                  //| Error Message: Oooops 2
                                                   //| Iteration: 3
-                                                  //| Error Message: Nice try! 3
+                                                  //| Treasure: Diamond 3
                                                   //| Iteration: 4
-                                                  //| Error Message: Oooops 4
+                                                  //| Treasure: Diamond 4
                                                   //| Iteration: 5
-                                                  //| Error Message: Oooops 5
+                                                  //| Treasure: Diamond 5
                                                   //| Iteration: 6
-                                                  //| Error Message: Oooops 6
+                                                  //| Error Message: Nice try! 6
                                                   //| Iteration: 7
-                                                  //| Treasure: Diamond 7
+                                                  //| Error Message: Oooops 7
                                                   //| Iteration: 8
-                                                  //| Error Message: Oooops 8
+                                                  //| Error Message: Nice try! 8
                                                   //| Iteration: 9
-                                                  //| Error Message: Oooops 9
+                                                  //| Treasure: Diamond 9
                                                   //| Iteration: 10
                                                   //| Error Message: Oooops 10
 }

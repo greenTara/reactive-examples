@@ -1,6 +1,11 @@
 import math.random
 
-object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(78); 
+/* This worksheet demonstrates some of the code snippets from
+* Week3, Lecture 1, "Monads and Effects", particularly slides 3-6.
+* This approach to implementing exceptions is not recommended
+* because the exceptions (the "unhappy path") are not handled.
+*/
+object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(335); 
   println("Welcome to the Scala worksheet")
   abstract class Coin {
      val denomination: Int
@@ -43,7 +48,16 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       new Silver
     }
   
-  object Adventure {
+  object AdventureFactory {
+    /* The anonymous class syntax is used for this factory object,
+    * allowing us to instantiate an object
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * AdventureFactory() is desugared to
+    * AdventureFactory.apply()
+    */
     def apply() = new Adventure {
        def collectCoins(): List[Coin] = {
          if (eatenByMonster(this))
@@ -61,15 +75,21 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)node1.Coin""");$skip(855); 
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node1.Coin""");$skip(1257); 
   
   def block(i: Int) = {
     println("Iteration: " + i.toString)
-	  val adventure = Adventure()
+	  val adventure = AdventureFactory()
 	  val coins = adventure.collectCoins()
 	  val treasure = adventure.buyTreasure(coins)
 	  println("Treasure: " + treasure.toString + " " + i.toString)
-  };System.out.println("""block: (i: Int)Unit""");$skip(41); 
+  };System.out.println("""block: (i: Int)Unit""");$skip(336); 
+  /* Multiple executions of a block of commands where
+   * each block contains one collectCoins and
+   * one buyTreasure. If either call fails, the whole iteration fails,
+   * because we are not catching exceptions in this implementation.
+   * Note that these blocks execute synchrounsly.
+   */
   (1 to 10 toList).foreach(i =>block(i))}
   
    

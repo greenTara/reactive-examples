@@ -19,10 +19,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-22, 106)
+                                                  //> EMail1  : Array[Byte] = Array(36, 90)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-26, -118, -113, -81, 81, -98, -70, 64, 105, 6
-                                                  //| 5, -19)
+                                                  //> EMail2  : Array[Byte] = Array(-14, -50, -101, 94, -62, -5, 11, 95, 39, 125, 
+                                                  //| 45)
     
   
   trait Socket {
@@ -87,10 +87,12 @@ object node6 {
     println("Iteration: " + i.toString)
     val socket = MySocket()
     val packet = socket.readFromMemory()
-     /* Although the Await.ready method is blocking, the internal use of blocking ensures
+    /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    * You can uncomment this line to slow down the rate at which new asynchronous
+    * computations are spawned by the iteration.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(t) => {
         println("Packet Read: " + i.toString)
@@ -104,7 +106,6 @@ object node6 {
       packet.flatMap(p => {
         socket.sendToEurope(p)
         })
-    Await.ready(confirmation, 1 second)
     confirmation onComplete {
       case Success(t) => {
         println("Received " + i.toString)
@@ -132,35 +133,36 @@ object node6 {
    * some of the output of the ansynchronous computations.
    */
   (1 to 8 toList).foreach(i =>block(i))           //> Iteration: 1
-                                                  //| Packet Read: 1
-                                                  //| Testing: true 1
-                                                  //| Received 1
+                                                  //| Testing: false 1
                                                   //| Iteration: 2
-                                                  //| Packet Read: 2
-                                                  //| Testing: true 2
+                                                  //| Testing: false 2
                                                   //| Iteration: 3
-                                                  //| Error message: Nice try! 2
-                                                  //| Packet Read: 3
-                                                  //| Testing: true 3
-                                                  //| Received 3
+                                                  //| Testing: false 3
                                                   //| Iteration: 4
+                                                  //| Testing: false 4
+                                                  //| Iteration: 5
+                                                  //| Testing: false 5
+                                                  //| Iteration: 6
+                                                  //| Testing: false 6
+                                                  //| Iteration: 7
+                                                  //| Testing: false 7
+                                                  //| Iteration: 8
+                                                  //| Testing: false 8
+  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 8
+                                                  //| Error message: Oooops 8
+                                                  //| Packet Read: 6
+                                                  //| Received 6
+                                                  //| Packet Read: 2
+                                                  //| Received 2
                                                   //| Packet Read: 4
                                                   //| Received 4
-                                                  //| Testing: true 4
-                                                  //| Iteration: 5
-                                                  //| Packet Read: 5
-                                                  //| Testing: true 5
-                                                  //| Received 5
-                                                  //| Iteration: 6
-                                                  //| Packet Read: 6
-                                                  //| Error message: Nice try! 6
-                                                  //| Testing: true 6
-                                                  //| Iteration: 7
+                                                  //| Packet Read: 1
+                                                  //| Received 7
+                                                  //| Packet Read: 3
+                                                  //| Received 3
                                                   //| Packet Read: 7
-                                                  //| Testing: true 7
-                                                  //| Error message: Nice try! 7
-                                                  //| Iteration: 8
-                                                  //| Packet Read: 8
-                                                  //| Testing: true 8
-                                                  //| Received 8
+                                                  //| Received 1
+                                                  //| Packet Read: 5
+                                                  //| Received 5-
+  
 }

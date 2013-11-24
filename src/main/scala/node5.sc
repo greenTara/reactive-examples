@@ -19,10 +19,10 @@ object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-26, -68)
+                                                  //> EMail1  : Array[Byte] = Array(116, -46)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(8, 53, 9, 98, -127, -74, -76, -98, -126, -39, 
-                                                  //| 49)
+                                                  //> EMail2  : Array[Byte] = Array(19, -74, -47, 81, 26, -48, -109, 89, -39, 124,
+                                                  //|  -75)
     
   
   trait Socket {
@@ -56,10 +56,15 @@ object node5 {
       EMail1
     }                                             //> packetSource: (rand: Double, prob: Double)Array[Byte]
   
-  object MySocket {
-    /* The anonymous class syntax is used here,
+  object SocketFactory {
+    /* The anonymous class syntax is used for this factory object,
     * allowing us to instantiate an object
-    * that extends a trait with undefined members.
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * SocketFactory() is desugared to
+    * SocketFactory.apply()
     */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
@@ -85,10 +90,12 @@ object node5 {
   }
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = MySocket()
+    val socket = SocketFactory()
     val packet = socket.readFromMemory()
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    * You can uncomment this line to slow down the rate at which new asynchronous
+    * computations are spawned by the iteration.
     */
     Await.ready(packet, 1 second)
     packet onComplete {
@@ -96,7 +103,6 @@ object node5 {
         println("Packet Read: " + i.toString)
         // messy nesting starts here
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
-  		  Await.ready(confirmation, 1 second)
         println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
         println("Confirmation Ready: " + i.toString)
         confirmation onComplete {
@@ -134,25 +140,34 @@ object node5 {
                                                   //| Iteration: 2
                                                   //| Error message: Oooops 1
                                                   //| Iteration: 3
-                                                  //| Packet Read: 2
-                                                  //| Testing: true 2
-                                                  //| Confirmation Ready: 2
-                                                  //| Confirmation: Received 2
+                                                  //| Error message: Oooops 2
                                                   //| Iteration: 4
                                                   //| Packet Read: 3
-                                                  //| Testing: true 3
+                                                  //| Testing: false 3
                                                   //| Confirmation Ready: 3
                                                   //| Error message: Nice try! 3
                                                   //| Iteration: 5
                                                   //| Packet Read: 4
-                                                  //| Error message: Oooops 5
-                                                  //| Iteration: 6
-                                                  //| Testing: true 4
-                                                  //| Iteration: 7
-                                                  //| Error message: Oooops 6
+                                                  //| Testing: false 4
                                                   //| Confirmation Ready: 4
-                                                  //| Confirmation: Received 4
+                                                  //| Error message: Nice try! 4
+                                                  //| Iteration: 6
+                                                  //| Packet Read: 5
+                                                  //| Testing: false 5
+                                                  //| Confirmation Ready: 5
+                                                  //| Error message: Nice try! 5
+                                                  //| Iteration: 7
+                                                  //| Packet Read: 6
+                                                  //| Testing: false 6
+                                                  //| Confirmation Ready: 6
+                                                  //| Error message: Nice try! 6
                                                   //| Iteration: 8
                                                   //| Packet Read: 7
-                                                  //| Error message: Oooops 8
+                                                  //| Testing: false 7
+                                                  //| Confirmation Ready: 7
+                                                  //| Error message: Nice try! 7
+  blocking{Thread.sleep(3000)}                    //> Packet Read: 8
+                                                  //| Testing: false 8
+                                                  //| Confirmation Ready: 8
+                                                  //| Error message: Nice try! 8/
 }

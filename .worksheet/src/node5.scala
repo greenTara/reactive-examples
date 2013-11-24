@@ -52,10 +52,15 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       EMail1
     }
   
-  object MySocket {
-    /* The anonymous class syntax is used here,
+  object SocketFactory {
+    /* The anonymous class syntax is used for this factory object,
     * allowing us to instantiate an object
-    * that extends a trait with undefined members.
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * SocketFactory() is desugared to
+    * SocketFactory.apply()
     */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
@@ -78,13 +83,15 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2420); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2752); 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = MySocket()
+    val socket = SocketFactory()
     val packet = socket.readFromMemory()
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
+    * You can uncomment this line to slow down the rate at which new asynchronous
+    * computations are spawned by the iteration.
     */
     Await.ready(packet, 1 second)
     packet onComplete {
@@ -92,7 +99,6 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
         println("Packet Read: " + i.toString)
         // messy nesting starts here
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
-  		  Await.ready(confirmation, 1 second)
         println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
         println("Confirmation Ready: " + i.toString)
         confirmation onComplete {
@@ -126,5 +132,6 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-   (1 to 8 toList).foreach(i =>block(i))}
+   (1 to 8 toList).foreach(i =>block(i));$skip(31); 
+  blocking{Thread.sleep(3000)}}
 }

@@ -1,7 +1,12 @@
 import math.random
 import scala.util.{Try, Success, Failure}
 
-object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(120); 
+/* This worksheet demonstrates some of the code snippets from
+* Week3, Lecture 1, "Monads and Effects", particularly slides 8-9.
+* Explicit case matching for Success and Failure is used
+* to handle the exceoptions.
+*/
+object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(338); 
   println("Welcome to the Scala worksheet")
   abstract class Coin {
      val denomination: Int
@@ -43,7 +48,16 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       new Silver
     }
   
-  object Adventure {
+  object AdventureFactory {
+    /* The anonymous class syntax is used for this factory object,
+    * allowing us to instantiate an object
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * AdventureFactory() is desugared to
+    * AdventureFactory.apply()
+    */
     def apply() = new Adventure {
        def collectCoins(): Try[List[Coin]] = Try {
          if (eatenByMonster(this))
@@ -61,22 +75,30 @@ object node2 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)node2.Coin""");$skip(1200); 
-  
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node2.Coin""");$skip(1724); 
+  /* Exception handling with an explicit case match
+  * to Success or Failure.
+  */
   def block(i: Int) = {
     println("Iteration: " + i.toString)
-	  val adventure = Adventure()
-	  val coins: Try[List[Coin]] = adventure.collectCoins()
-	  val treasure: Try[Treasure] = coins match {
-	   case Success(cs)          => adventure.buyTreasure(cs)
+	  val adventure: Adventure = AdventureFactory()
+	  val tryCoins: Try[List[Coin]] = adventure.collectCoins()
+	  val tryTreasure: Try[Treasure] = tryCoins match {
+	   case Success(coins)          => adventure.buyTreasure(coins)
 	   //case failure @ Failure(t) => failure  // This produces a type error.
 	   case Failure(t) => Failure(t)
 	  }
 	  
-	  treasure match {
-	    case Success(tr)     => println("Treasure: " + tr.toString + " " + i.toString)
+	  tryTreasure match {
+	    case Success(treasure)     => println("Treasure: " + treasure.toString + " " + i.toString)
 	    case Failure(t)      => println("Error Message: " + t.toString + " " + i.toString)
 	  }
-  };System.out.println("""block: (i: Int)Unit""");$skip(41); 
+  };System.out.println("""block: (i: Int)Unit""");$skip(340); 
+  /* Multiple executions of a block of commands where
+   * each block contains one collectCoins and
+   * one buyTreasure. If either call fails, the whole iteration does not fail,
+   * because we are catching exceptions in this implementation.
+   * Note that these blocks execute synchrounsly.
+   */
   (1 to 10 toList).foreach(i =>block(i))}
 }

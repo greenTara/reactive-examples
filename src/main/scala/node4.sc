@@ -1,5 +1,9 @@
 import math.random
 import scala.util.{Try, Success, Failure}
+/* This worksheet demonstrates some of the code snippets from
+* Week3, Lecture 1, "Monads and Effects", particularly slides 13.
+* Exception handling is based on the for comprehension of Try.
+*/
 
 object node4 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
@@ -43,7 +47,16 @@ object node4 {
       new Silver
     }                                             //> coinSource: (rand: Double, prob: Double)node4.Coin
   
-  object Adventure {
+  object AdventureFactory {
+    /* The anonymous class syntax is used for this factory object,
+    * allowing us to instantiate an object
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * AdventureFactory() is desugared to
+    * AdventureFactory.apply()
+    */
     def apply() = new Adventure {
        def collectCoins(): Try[List[Coin]] = Try {
          if (eatenByMonster(this))
@@ -63,9 +76,11 @@ object node4 {
     }
   }
 
+  /* Exception handling with for comprehension.
+  */
   def block(i: Int) = {
     println("Iteration: " + i.toString)
-	  val adventure = Adventure()
+	  val adventure = AdventureFactory()
 	  val treasure: Try[Treasure] = for {
 	    coins <- adventure.collectCoins()
 	    treasure <- adventure.buyTreasure(coins)
@@ -76,20 +91,26 @@ object node4 {
 	  }
 	  
   }                                               //> block: (i: Int)Unit
- (1 to 10 toList).foreach(i =>block(i))           //> Iteration: 1
-                                                  //| Treasure: Diamond 1
+ /* Multiple executions of a block of commands where
+   * each block contains one collectCoins and
+   * one buyTreasure. If either call fails, the whole iteration does not fail,
+   * because we are catching exceptions (with for) in this implementation.
+   * Note that these blocks execute synchrounsly.
+   */
+  (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Error Message: Nice try! 1
                                                   //| Iteration: 2
-                                                  //| Treasure: Diamond 2
+                                                  //| Error Message: Oooops 2
                                                   //| Iteration: 3
                                                   //| Error Message: Oooops 3
                                                   //| Iteration: 4
                                                   //| Treasure: Diamond 4
                                                   //| Iteration: 5
-                                                  //| Error Message: Oooops 5
+                                                  //| Treasure: Diamond 5
                                                   //| Iteration: 6
-                                                  //| Treasure: Diamond 6
+                                                  //| Error Message: Nice try! 6
                                                   //| Iteration: 7
-                                                  //| Treasure: Diamond 7
+                                                  //| Error Message: Nice try! 7
                                                   //| Iteration: 8
                                                   //| Treasure: Diamond 8
                                                   //| Iteration: 9
