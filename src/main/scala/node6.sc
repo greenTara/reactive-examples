@@ -19,10 +19,9 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-18, 7)
+                                                  //> EMail1  : Array[Byte] = Array(15, 24)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-92, 105, 91, -124, 47, 87, -97, -28, -120, 94
-                                                  //| , -78)
+                                                  //> EMail2  : Array[Byte] = Array(4, -64, 21, 42, 47, -71, -8, -6, 52, 7, 118)
     
   
   trait Socket {
@@ -138,7 +137,9 @@ object node6 {
    * some of the output of the ansynchronous computations.
    */
   (1 to 8 toList).foreach(i =>block(i))           //> Iteration: 1
-                                                  //| Testing: false 1
+                                                  //| Error message: Oooops 1
+                                                  //| Testing: true 1
+                                                  //| Error message: Oooops 1
                                                   //| Iteration: 2
                                                   //| Testing: false 2
                                                   //| Iteration: 3
@@ -152,22 +153,21 @@ object node6 {
                                                   //| Iteration: 7
                                                   //| Testing: false 7
                                                   //| Iteration: 8
+                                                  //| Error message: Oooops 7
+                                                  //| Error message: Oooops 7
                                                   //| Testing: false 8
-  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 4
-                                                  //| Error message: Oooops 6
-                                                  //| Error message: Oooops 4
-                                                  //| Error message: Oooops 6
-                                                  //| Packet Read: 3
-                                                  //| Received 3
+   //keeps the worksheet alive so the iterations can finish!
+  blocking{Thread.sleep(3000)}                    //> Packet Read: 5
+                                                  //| Received 5
                                                   //| Packet Read: 8
                                                   //| Received 8
-                                                  //| Packet Read: 7
-                                                  //| Received 7
-                                                  //| Packet Read: 5
-                                                  //| Error message: Nice try! 5
-                                                  //| Packet Read: 1
-                                                  //| Error message: Nice try! 1
+                                                  //| Received 2
                                                   //| Packet Read: 2
-                                                  //| Error message: Nice try! 2/
+                                                  //| Packet Read: 3
+                                                  //| Received 3
+                                                  //| Packet Read: 6
+                                                  //| Received 6
+                                                  //| Packet Read: 4
+                                                  //| Error message: Nice try! 4/
   
 }
