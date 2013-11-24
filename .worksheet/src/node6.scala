@@ -52,10 +52,15 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       EMail1
     }
   
-  object MySocket {
-    /* The anonymous class syntax is used here,
+  object SocketFactory {
+    /* The anonymous class syntax is used for this factory object,
     * allowing us to instantiate an object
-    * that extends a trait with undefined members.
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * SocketFactory() is desugared to
+    * SocketFactory.apply()
     */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
@@ -77,11 +82,11 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2302); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2545); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = MySocket()
+    val socket = SocketFactory()
     val packet = socket.readFromMemory()
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.

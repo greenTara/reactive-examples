@@ -19,10 +19,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(36, 90)
+                                                  //> EMail1  : Array[Byte] = Array(-18, 7)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-14, -50, -101, 94, -62, -5, 11, 95, 39, 125, 
-                                                  //| 45)
+                                                  //> EMail2  : Array[Byte] = Array(-92, 105, 91, -124, 47, 87, -97, -28, -120, 94
+                                                  //| , -78)
     
   
   trait Socket {
@@ -56,10 +56,15 @@ object node6 {
       EMail1
     }                                             //> packetSource: (rand: Double, prob: Double)Array[Byte]
   
-  object MySocket {
-    /* The anonymous class syntax is used here,
+  object SocketFactory {
+    /* The anonymous class syntax is used for this factory object,
     * allowing us to instantiate an object
-    * that extends a trait with undefined members.
+    * that extends a trait having undefined members.
+    * The anonymous class must provide definitions
+    * for all undefined members of the trait.
+    * Note that this object has an apply method:
+    * SocketFactory() is desugared to
+    * SocketFactory.apply()
     */
     def apply() = new Socket {
        def readFromMemory(): Future[Array[Byte]] = Future {
@@ -85,7 +90,7 @@ object node6 {
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
-    val socket = MySocket()
+    val socket = SocketFactory()
     val packet = socket.readFromMemory()
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
@@ -148,21 +153,21 @@ object node6 {
                                                   //| Testing: false 7
                                                   //| Iteration: 8
                                                   //| Testing: false 8
-  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 8
-                                                  //| Error message: Oooops 8
-                                                  //| Packet Read: 6
-                                                  //| Received 6
-                                                  //| Packet Read: 2
-                                                  //| Received 2
-                                                  //| Packet Read: 4
-                                                  //| Received 4
-                                                  //| Packet Read: 1
-                                                  //| Received 7
+  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 4
+                                                  //| Error message: Oooops 6
+                                                  //| Error message: Oooops 4
+                                                  //| Error message: Oooops 6
                                                   //| Packet Read: 3
                                                   //| Received 3
+                                                  //| Packet Read: 8
+                                                  //| Received 8
                                                   //| Packet Read: 7
-                                                  //| Received 1
+                                                  //| Received 7
                                                   //| Packet Read: 5
-                                                  //| Received 5-
+                                                  //| Error message: Nice try! 5
+                                                  //| Packet Read: 1
+                                                  //| Error message: Nice try! 1
+                                                  //| Packet Read: 2
+                                                  //| Error message: Nice try! 2/
   
 }

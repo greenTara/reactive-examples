@@ -132,6 +132,6 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-   (1 to 8 toList).foreach(i =>block(i));$skip(31); 
-  blocking{Thread.sleep(3000)}}
+   (1 to 8 toList).foreach(i =>block(i));$skip(91); 
+  blocking{Thread.sleep(3000)}   //keeps the worksheet alive so the iterations can finish!}
 }
