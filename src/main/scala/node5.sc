@@ -19,10 +19,10 @@ object node5 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(99, -87)
+                                                  //> EMail1  : Array[Byte] = Array(61, 36)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-104, -70, 97, 120, -81, -19, 14, 74, -43, -74
-                                                  //| , -121)
+                                                  //> EMail2  : Array[Byte] = Array(8, -28, 4, -119, -70, 9, -51, 22, -127, -122, 
+                                                  //| -74)
     
   
   trait Socket {
@@ -97,14 +97,17 @@ object node5 {
     * You can uncomment this line to slow down the rate at which new asynchronous
     * computations are spawned by the iteration.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(p) => {
         println("Packet Read: " + i.toString)
         // messy nesting starts here
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
-        println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
-        println("Confirmation Ready: " + i.toString)
+		    /* You can uncomment this line to slow down the rate at which new asynchronous
+		    * computations are spawned by the iteration.
+		    */
+        //Await.ready(confirmation, 1 second)
+        println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
         confirmation onComplete {
           case Success(cf) => {
             println("Confirmation: Received " + i.toString)
@@ -121,6 +124,7 @@ object node5 {
       /* Uncommenting this line gives an error message, demonstrating that the
       * confirmation Future is local to the scope of the onComplete call.
       */
+      //  println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
       //  println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
     }
     
@@ -138,40 +142,33 @@ object node5 {
    */
    (1 to 8 toList).foreach(i =>block(i))          //> Iteration: 1
                                                   //| Iteration: 2
-                                                  //| Packet Read: 1
-                                                  //| Testing: false 1
-                                                  //| Confirmation Ready: 1
-                                                  //| Error message: Nice try! 1
                                                   //| Iteration: 3
-                                                  //| Packet Read: 2
-                                                  //| Testing: false 2
                                                   //| Iteration: 4
-                                                  //| Error message: Oooops 3
-                                                  //| Confirmation Ready: 2
-                                                  //| Error message: Nice try! 2
-                                                  //| Packet Read: 4
                                                   //| Iteration: 5
-                                                  //| Testing: false 4
-                                                  //| Confirmation Ready: 4
-                                                  //| Error message: Nice try! 4
-                                                  //| Packet Read: 5
                                                   //| Iteration: 6
-                                                  //| Testing: false 5
-                                                  //| Confirmation Ready: 5
-                                                  //| Error message: Nice try! 5
                                                   //| Iteration: 7
-                                                  //| Packet Read: 6
-                                                  //| Testing: false 6
-                                                  //| Confirmation Ready: 6
-                                                  //| Confirmation: Received 6
                                                   //| Iteration: 8
-                                                  //| Packet Read: 7
-                                                  //| Testing: false 7
-                                                  //| Confirmation Ready: 7
-                                                  //| Error message: Nice try! 7
   //keeps the worksheet alive so the iterations can finish!
-  blocking{Thread.sleep(3000)}                    //> Packet Read: 8
-                                                  //| Testing: false 8
-                                                  //| Confirmation Ready: 8
-                                                  //| Error message: Nice try! 8/
+  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 3
+                                                  //| Packet Read: 5
+                                                  //| Confirmation Ready: false 5
+                                                  //| Error message: Nice try! 5
+                                                  //| Packet Read: 1
+                                                  //| Confirmation Ready: false 1
+                                                  //| Packet Read: 7
+                                                  //| Error message: Nice try! 1
+                                                  //| Confirmation Ready: false 7
+                                                  //| Error message: Nice try! 7
+                                                  //| Packet Read: 2
+                                                  //| Packet Read: 6
+                                                  //| Confirmation Ready: false 2
+                                                  //| Confirmation Ready: false 6
+                                                  //| Error message: Nice try! 2
+                                                  //| Error message: Nice try! 6
+                                                  //| Packet Read: 8
+                                                  //| Packet Read: 4
+                                                  //| Confirmation Ready: false 8
+                                                  //| Confirmation Ready: false 4
+                                                  //| Error message: Nice try! 8
+                                                  //| Error message: Nice try! 4/
 }

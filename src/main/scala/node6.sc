@@ -19,9 +19,10 @@ object node6 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(15, 24)
+                                                  //> EMail1  : Array[Byte] = Array(36, -16)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(4, -64, 21, 42, 47, -71, -8, -6, 52, 7, 118)
+                                                  //> EMail2  : Array[Byte] = Array(14, 65, -10, 75, -99, 54, 102, -117, 91, 14, -
+                                                  //| 19)
     
   
   trait Socket {
@@ -110,6 +111,12 @@ object node6 {
       packet.flatMap(p => {
         socket.sendToEurope(p)
         })
+    //Await.ready(confirmation, 1 second)
+     /* This command demonstrates that the
+      * confirmation Future is available throughout the scope of block()
+      * unlike the previous implementation.
+      */
+    println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
     confirmation onComplete {
       case Success(t) => {
         println("Received " + i.toString)
@@ -118,11 +125,6 @@ object node6 {
         println("Error message: " + t.getCause().toString + " " + i.toString)
       }
     }
-     /* This command demonstrates that the
-      * confirmation Future is available throughout the scope of block()
-      * unlike the previous implementation.
-      */
-     println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
     
   }                                               //> block: (i: Int)Unit
    /* Multiple executions of a block of commands where
@@ -136,38 +138,46 @@ object node6 {
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-  (1 to 8 toList).foreach(i =>block(i))           //> Iteration: 1
-                                                  //| Error message: Oooops 1
-                                                  //| Testing: true 1
-                                                  //| Error message: Oooops 1
+  (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Confirmation Ready: false 1
                                                   //| Iteration: 2
-                                                  //| Testing: false 2
+                                                  //| Confirmation Ready: false 2
                                                   //| Iteration: 3
-                                                  //| Testing: false 3
+                                                  //| Confirmation Ready: false 3
                                                   //| Iteration: 4
-                                                  //| Testing: false 4
+                                                  //| Confirmation Ready: false 4
                                                   //| Iteration: 5
-                                                  //| Testing: false 5
+                                                  //| Confirmation Ready: false 5
                                                   //| Iteration: 6
-                                                  //| Testing: false 6
+                                                  //| Confirmation Ready: false 6
                                                   //| Iteration: 7
-                                                  //| Testing: false 7
+                                                  //| Confirmation Ready: false 7
                                                   //| Iteration: 8
+                                                  //| Error message: Oooops 2
+                                                  //| Error message: Oooops 2
+                                                  //| Error message: Oooops 4
                                                   //| Error message: Oooops 7
                                                   //| Error message: Oooops 7
-                                                  //| Testing: false 8
+                                                  //| Confirmation Ready: false 8
+                                                  //| Error message: Oooops 4
+                                                  //| Error message: Oooops 8
+                                                  //| Iteration: 9
+                                                  //| Error message: Oooops 8
+                                                  //| Error message: Oooops 9
+                                                  //| Confirmation Ready: false 9
+                                                  //| Iteration: 10
+                                                  //| Error message: Oooops 9
+                                                  //| Confirmation Ready: false 10
    //keeps the worksheet alive so the iterations can finish!
-  blocking{Thread.sleep(3000)}                    //> Packet Read: 5
-                                                  //| Received 5
-                                                  //| Packet Read: 8
-                                                  //| Received 8
-                                                  //| Received 2
-                                                  //| Packet Read: 2
-                                                  //| Packet Read: 3
-                                                  //| Received 3
+  blocking{Thread.sleep(3000)}                    //> Packet Read: 10
+                                                  //| Received 10
                                                   //| Packet Read: 6
                                                   //| Received 6
-                                                  //| Packet Read: 4
-                                                  //| Error message: Nice try! 4/
+                                                  //| Packet Read: 5
+                                                  //| Received 5
+                                                  //| Packet Read: 1
+                                                  //| Received 1
+                                                  //| Packet Read: 3
+                                                  //| Error message: Nice try! 3/
   
 }

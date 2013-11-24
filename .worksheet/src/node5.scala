@@ -83,7 +83,7 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2752); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(3000); 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
     val socket = SocketFactory()
@@ -93,14 +93,17 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     * You can uncomment this line to slow down the rate at which new asynchronous
     * computations are spawned by the iteration.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(p) => {
         println("Packet Read: " + i.toString)
         // messy nesting starts here
   		  val confirmation: Future[Array[Byte]] =  socket.sendToEurope(p)
-        println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
-        println("Confirmation Ready: " + i.toString)
+		    /* You can uncomment this line to slow down the rate at which new asynchronous
+		    * computations are spawned by the iteration.
+		    */
+        //Await.ready(confirmation, 1 second)
+        println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
         confirmation onComplete {
           case Success(cf) => {
             println("Confirmation: Received " + i.toString)
@@ -117,6 +120,7 @@ object node5 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       /* Uncommenting this line gives an error message, demonstrating that the
       * confirmation Future is local to the scope of the onComplete call.
       */
+      //  println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
       //  println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
     }
     

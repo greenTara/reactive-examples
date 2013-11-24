@@ -82,7 +82,7 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Received
        }
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2545); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(2597); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
@@ -107,6 +107,12 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       packet.flatMap(p => {
         socket.sendToEurope(p)
         })
+    //Await.ready(confirmation, 1 second)
+     /* This command demonstrates that the
+      * confirmation Future is available throughout the scope of block()
+      * unlike the previous implementation.
+      */
+    println("Confirmation Ready: " + confirmation.isCompleted.toString + " " + i.toString)
     confirmation onComplete {
       case Success(t) => {
         println("Received " + i.toString)
@@ -115,13 +121,8 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
         println("Error message: " + t.getCause().toString + " " + i.toString)
       }
     }
-     /* This command demonstrates that the
-      * confirmation Future is available throughout the scope of block()
-      * unlike the previous implementation.
-      */
-     println("Testing: " + confirmation.isCompleted.toString + " " + i.toString)
     
-  };System.out.println("""block: (i: Int)Unit""");$skip(671); 
+  };System.out.println("""block: (i: Int)Unit""");$skip(672); 
    /* Multiple executions of a block of commands where
    * each block contains one readFromMemory and, if that is
    * successful, one sendToEurope.
@@ -133,7 +134,7 @@ object node6 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-  (1 to 8 toList).foreach(i =>block(i));$skip(92); 
+  (1 to 10 toList).foreach(i =>block(i));$skip(92); 
    //keeps the worksheet alive so the iterations can finish!
   blocking{Thread.sleep(3000)}}
   
