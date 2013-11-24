@@ -63,22 +63,26 @@ object node1 {
     }
   }
   
-  def block() = {
+  def block(i: Int) = {
+    println("Iteration: " + i.toString)
 	  val adventure = Adventure()
 	  val coins = adventure.collectCoins()
 	  val treasure = adventure.buyTreasure(coins)
-	  println("Treasure: " ++ treasure.toString)
-  }                                               //> block: ()Unit
-  (1 to 10 toList).foreach(e =>block())           //> Nice try!
-                                                  //| 	at node1$$anonfun$main$1$Adventure$3$$anon$1.buyTreasure(node1.scala:59)
-                                                  //| 
+	  println("Treasure: " + treasure.toString + " " + i.toString)
+  }                                               //> block: (i: Int)Unit
+  (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Treasure: Diamond 1
+                                                  //| Iteration: 2
+                                                  //| Oooops
+                                                  //| 	at node1$$anonfun$main$1$Adventure$3$$anon$1.collectCoins(node1.scala:50
+                                                  //| )
                                                   //| 	at node1$$anonfun$main$1.node1$$anonfun$$block$1(node1.scala:69)
                                                   //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply$mcVI$sp(node1.sca
-                                                  //| la:72)
-                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:72)
-                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:72)
+                                                  //| la:73)
+                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:73)
+                                                  //| 	at node1$$anonfun$main$1$$anonfun$apply$mcV$sp$1.apply(node1.scala:73)
                                                   //| 	at scala.collection.immutable.List.foreach(List.scala:318)
-                                                  //| 	at node1$$anonfun$main$1.apply$mcV$sp(node1.scala:72)
+                                                  //| 	at node1$$anonfun$main$1.apply$mcV$sp(node1.scala:73)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
                                                   //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
@@ -86,7 +90,8 @@ object node1 {
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
                                                   //| ksheetSupport.scala:75)
                                                   //| 	at node1$.main(node1.scala:3)
-                                                  //| 	at node1.main(node1.scala)
+                                                  //| 	at node1.
+                                                  //| Output exceeds cutoff limit.
   
    
 }

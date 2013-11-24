@@ -61,15 +61,16 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)node1.Coin""");$skip(791); 
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node1.Coin""");$skip(855); 
   
-  def block() = {
+  def block(i: Int) = {
+    println("Iteration: " + i.toString)
 	  val adventure = Adventure()
 	  val coins = adventure.collectCoins()
 	  val treasure = adventure.buyTreasure(coins)
-	  println("Treasure: " ++ treasure.toString)
-  };System.out.println("""block: ()Unit""");$skip(40); 
-  (1 to 10 toList).foreach(e =>block())}
+	  println("Treasure: " + treasure.toString + " " + i.toString)
+  };System.out.println("""block: (i: Int)Unit""");$skip(41); 
+  (1 to 10 toList).foreach(i =>block(i))}
   
    
 }

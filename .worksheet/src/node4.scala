@@ -61,20 +61,21 @@ object node4 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
            Diamond
        }
     }
-  };System.out.println("""coinSource: (rand: Double, prob: Double)node4.Coin""");$skip(984); 
+  };System.out.println("""coinSource: (rand: Double, prob: Double)node4.Coin""");$skip(1066); 
 
-  def block() = {
+  def block(i: Int) = {
+    println("Iteration: " + i.toString)
 	  val adventure = Adventure()
 	  val treasure: Try[Treasure] = for {
 	    coins <- adventure.collectCoins()
 	    treasure <- adventure.buyTreasure(coins)
 	  } yield treasure
 	   treasure match {
-	    case Success(tr)     => println("Treasure: " ++ tr.toString)
-	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	    case Success(tr)     => println("Treasure: " + tr.toString + " " + i.toString)
+	    case Failure(t)      => println("Error Message: " + t.toString + " " + i.toString)
 	  }
 	  
-  };System.out.println("""block: ()Unit""");$skip(39); 
- (1 to 10 toList).foreach(e =>block())}
+  };System.out.println("""block: (i: Int)Unit""");$skip(40); 
+ (1 to 10 toList).foreach(i =>block(i))}
    
 }

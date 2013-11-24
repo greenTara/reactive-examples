@@ -63,27 +63,38 @@ object node4 {
     }
   }
 
-  def block() = {
+  def block(i: Int) = {
+    println("Iteration: " + i.toString)
 	  val adventure = Adventure()
 	  val treasure: Try[Treasure] = for {
 	    coins <- adventure.collectCoins()
 	    treasure <- adventure.buyTreasure(coins)
 	  } yield treasure
 	   treasure match {
-	    case Success(tr)     => println("Treasure: " ++ tr.toString)
-	    case Failure(t)      => println("Error Message: " ++ t.toString)
+	    case Success(tr)     => println("Treasure: " + tr.toString + " " + i.toString)
+	    case Failure(t)      => println("Error Message: " + t.toString + " " + i.toString)
 	  }
 	  
-  }                                               //> block: ()Unit
- (1 to 10 toList).foreach(e =>block())            //> Error Message: Nice try!
-                                                  //| Treasure: Diamond
-                                                  //| Error Message: Oooops
-                                                  //| Treasure: Diamond
-                                                  //| Error Message: Oooops
-                                                  //| Error Message: Nice try!
-                                                  //| Error Message: Nice try!
-                                                  //| Error Message: Nice try!
-                                                  //| Treasure: Diamond
-                                                  //| Treasure: Diamond
+  }                                               //> block: (i: Int)Unit
+ (1 to 10 toList).foreach(i =>block(i))           //> Iteration: 1
+                                                  //| Treasure: Diamond 1
+                                                  //| Iteration: 2
+                                                  //| Treasure: Diamond 2
+                                                  //| Iteration: 3
+                                                  //| Error Message: Oooops 3
+                                                  //| Iteration: 4
+                                                  //| Treasure: Diamond 4
+                                                  //| Iteration: 5
+                                                  //| Error Message: Oooops 5
+                                                  //| Iteration: 6
+                                                  //| Treasure: Diamond 6
+                                                  //| Iteration: 7
+                                                  //| Treasure: Diamond 7
+                                                  //| Iteration: 8
+                                                  //| Treasure: Diamond 8
+                                                  //| Iteration: 9
+                                                  //| Error Message: Oooops 9
+                                                  //| Iteration: 10
+                                                  //| Error Message: Nice try! 10
    
 }
