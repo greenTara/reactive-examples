@@ -99,10 +99,10 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
        def sendToSafe(packet: Array[Byte]): Future[Array[Byte]] = {
          sendTo(mailServer.europe, packet) recoverWith {
            case europeError => sendTo(mailServer.usa, packet) recover {
-             case usaError  =>
-               usaError.getCause().getMessage.map(x => x.toByte).toArray
-             //case usaError =>
-             //  usaError.getMessage.map(x => x.toByte).toArray
+         //    case usaError  =>
+       //        usaError.getCause().getMessage.map(x => x.toByte).toArray
+             case usaError =>
+               usaError.getMessage.map(x => x.toByte).toArray
        } } }
        
 			

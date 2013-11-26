@@ -18,10 +18,10 @@ object node8 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-103, -28)
+                                                  //> EMail1  : Array[Byte] = Array(39, 72)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(-6, -124, -61, -66, 1, -9, 82, -71, -47, 127, 
-                                                  //| -25)
+                                                  //> EMail2  : Array[Byte] = Array(46, -3, 74, -12, -99, 45, -115, -100, -95, -1,
+                                                  //|  -3)
   type URL = String
   
   trait Socket {
@@ -103,10 +103,10 @@ object node8 {
        def sendToSafe(packet: Array[Byte]): Future[Array[Byte]] = {
          sendTo(mailServer.europe, packet) recoverWith {
            case europeError => sendTo(mailServer.usa, packet) recover {
-             case usaError  =>
-               usaError.getCause().getMessage.map(x => x.toByte).toArray
-             //case usaError =>
-             //  usaError.getMessage.map(x => x.toByte).toArray
+         //    case usaError  =>
+       //        usaError.getCause().getMessage.map(x => x.toByte).toArray
+             case usaError =>
+               usaError.getMessage.map(x => x.toByte).toArray
        } } }
        
 			
@@ -165,29 +165,44 @@ object node8 {
    * some of the output of the ansynchronous computations.
    */
   (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
-                                                  //| Error message: Oooops 1
+                                                  //| Packet Length: 83 1
                                                   //| Confirmation Ready: true 1
                                                   //| Iteration: 2
-                                                  //| Error message: Oooops 1
+                                                  //| Message: Received 1
                                                   //| Packet Length: 56 2
                                                   //| Confirmation Ready: true 2
                                                   //| Iteration: 3
-                                                  //| scala.MatchError: Failure(java.lang.NullPointerException) (of class scala.u
-                                                  //| til.Failure)
-                                                  //| 	at node8$$anonfun$main$1$$anonfun$node8$$anonfun$$block$1$2.apply(node8.
-                                                  //| scala:141)
-                                                  //| 	at node8$$anonfun$main$1$$anonfun$node8$$anonfun$$block$1$2.apply(node8.
-                                                  //| scala:141)
-                                                  //| 	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:29)
-                                                  //| 	at scala.concurrent.impl.ExecutionContextImpl$$anon$3.exec(ExecutionCont
-                                                  //| extImpl.scala:107)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool
-                                                  //| .java:1339)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:19
-                                                  //| 79)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerT
-                                                  //| Output exceeds cutoff limit.
+                                                  //| Message: Boxed Error 2
+                                                  //| Packet Length: 38 3
+                                                  //| Confirmation Ready: true 3
+                                                  //| Iteration: 4
+                                                  //| Message: Received 3
+                                                  //| Packet Length: 83 4
+                                                  //| Confirmation Ready: true 4
+                                                  //| Iteration: 5
+                                                  //| Message: Received 4
+                                                  //| Packet Length: 65 5
+                                                  //| Confirmation Ready: true 5
+                                                  //| Iteration: 6
+                                                  //| Message: Received 5
+                                                  //| Confirmation Ready: true 6
+                                                  //| Error message: Oooops 6
+                                                  //| Error message: Oooops 6
+                                                  //| Iteration: 7
+                                                  //| Packet Length: 38 7
+                                                  //| Confirmation Ready: true 7
+                                                  //| Iteration: 8
+                                                  //| Message: Received 7
+                                                  //| Packet Length: 65 8
+                                                  //| Confirmation Ready: true 8
+                                                  //| Iteration: 9
+                                                  //| Message: Received 8
+                                                  //| Packet Length: 38 9
+                                                  //| Confirmation Ready: true 9
+                                                  //| Iteration: 10
+                                                  //| Message: Received 9
+                                                  //| Packet Length: 65 10
+                                                  //| Confirmation Ready: true 10
    //keeps the worksheet alive so the iterations can finish!
   blocking{Thread.sleep(3000)}                    //> Message: Received 10-
   
