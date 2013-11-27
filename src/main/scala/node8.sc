@@ -17,16 +17,19 @@ import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, Timeou
 * Using recoverWith and recover, there are fewer failures.
 * Note that the effect of this implementation of recoverWith and recover is to hide the
 * occurrence of failures of the first sendTo.
-* The only error message that will be printed is "Nice Try!"
+* The only error messages that will be printed are Oooops and "Nice Try!",
+* never "Guter Versuch!"
+* Also note that connection failures (Oooops) are printed twice - why do you
+* think that happens?
 */
 object node8 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(-54, 63)
+                                                  //> EMail1  : Array[Byte] = Array(-59, -121)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(114, -37, -8, 35, -53, -120, -108, 22, -16, 4
-                                                  //| 2, -21)
+                                                  //> EMail2  : Array[Byte] = Array(12, 10, -114, 40, -80, 28, -30, 5, 124, 27, -
+                                                  //| 123)
   type URL = String
   
   trait Socket {
@@ -127,9 +130,9 @@ object node8 {
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
     * You can uncomment this line to slow down the rate at which new asynchronous
-    * computations are spawned by the iteration.
+    * computations are spawned by the iteration, a sort of throttling.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(p) => {
         println("Packet Length: " + p.length.toString + " " + i.toString)
@@ -143,7 +146,8 @@ object node8 {
       packet.flatMap(p => {
         socket.sendToSafe( p )
         })
-    Await.ready(confirmation, 1 second)
+    // Similarly, you may throttle here.
+    //Await.ready(confirmation, 1 second)
      /* This command demonstrates that the
       * confirmation Future is available throughout the scope of block()
       * unlike the previous implementation.
@@ -172,47 +176,65 @@ object node8 {
    * some of the output of the ansynchronous computations.
    */
   (1 to 15 toList).foreach(i =>block(i))          //> Iteration: 1
-                                                  //| Error message: Oooops 1
-                                                  //| Confirmation Ready: true 1
+                                                  //| Confirmation Ready: false 1
                                                   //| Iteration: 2
-                                                  //| Error message: Oooops 1
-                                                  //| Packet Length: 56 2
-                                                  //| Confirmation Ready: true 2
+                                                  //| Confirmation Ready: false 2
                                                   //| Iteration: 3
-                                                  //| Message: Nice try! 2
-                                                  //| Packet Length: 56 3
-                                                  //| Confirmation Ready: true 3
+                                                  //| Confirmation Ready: false 3
                                                   //| Iteration: 4
-                                                  //| Message: Nice try! 3
-                                                  //| Packet Length: 56 4
-                                                  //| Confirmation Ready: true 4
+                                                  //| Confirmation Ready: false 4
                                                   //| Iteration: 5
-                                                  //| Message: Nice try! 4
-                                                  //| Packet Length: 56 5
-                                                  //| Confirmation Ready: true 5
+                                                  //| Confirmation Ready: false 5
                                                   //| Iteration: 6
-                                                  //| Message: Nice try! 5
-                                                  //| Packet Length: 74 6
-                                                  //| Confirmation Ready: true 6
+                                                  //| Confirmation Ready: false 6
                                                   //| Iteration: 7
-                                                  //| Message: Nice try! 6
-                                                  //| Packet Length: 47 7
-                                                  //| Confirmation Ready: true 7
+                                                  //| Confirmation Ready: false 7
                                                   //| Iteration: 8
-                                                  //| Message: Received 7
-                                                  //| Packet Length: 92 8
-                                                  //| Confirmation Ready: true 8
+                                                  //| Confirmation Ready: false 8
                                                   //| Iteration: 9
-                                                  //| Message: Nice try! 8
-                                                  //| Packet Length: 74 9
-                                                  //| Confirmation Ready: true 9
+                                                  //| Confirmation Ready: false 9
+                                                  //| Error message: Oooops 5
                                                   //| Iteration: 10
-                                                  //| Message: Nice try! 9
-                                                  //| Packet Length: 74 10
-                                                  //| Confirmation Ready: true 10
-                                                  //| It
-                                                  //| Output exceeds cutoff limit.
+                                                  //| Error message: Oooops 5
+                                                  //| Confirmation Ready: false 10
+                                                  //| Iteration: 11
+                                                  //| Confirmation Ready: false 11
+                                                  //| Iteration: 12
+                                                  //| Confirmation Ready: false 12
+                                                  //| Iteration: 13
+                                                  //| Confirmation Ready: false 13
+                                                  //| Iteration: 14
+                                                  //| Confirmation Ready: false 14
+                                                  //| Iteration: 15
+                                                  //| Confirmation Ready: false 15
    //keeps the worksheet alive so the iterations can finish!
-  blocking{Thread.sleep(3000)}                    //> Message: Received 15-
+  blocking{Thread.sleep(3000)}                    //> Error message: Oooops 15
+                                                  //| Error message: Oooops 15
+                                                  //| Packet Length: 47 4
+                                                  //| Message: Received 4
+                                                  //| Packet Length: 56 9
+                                                  //| Packet Length: 56 8
+                                                  //| Packet Length: 56 2
+                                                  //| Packet Length: 56 13
+                                                  //| Message: Nice try! 2
+                                                  //| Message: Nice try! 13
+                                                  //| Message: Nice try! 9
+                                                  //| Message: Nice try! 8
+                                                  //| Packet Length: 65 11
+                                                  //| Message: Received 11
+                                                  //| Packet Length: 65 7
+                                                  //| Message: Received 7
+                                                  //| Packet Length: 65 14
+                                                  //| Message: Received 14
+                                                  //| Packet Length: 74 3
+                                                  //| Packet Length: 74 6
+                                                  //| Message: Nice try! 3
+                                                  //| Message: Nice try! 6
+                                                  //| Packet Length: 74 1
+                                                  //| Message: Nice try! 1
+                                                  //| Packet Length: 74 10
+                                                  //| Message: Nice try! 10
+                                                  //| Packet Length: 92 12
+                                                  //| Message: Nice try! 12/
   
 }

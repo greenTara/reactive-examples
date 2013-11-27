@@ -17,9 +17,12 @@ import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, Timeou
 * Using recoverWith and recover, there are fewer failures.
 * Note that the effect of this implementation of recoverWith and recover is to hide the
 * occurrence of failures of the first sendTo.
-* The only error message that will be printed is "Nice Try!"
+* The only error messages that will be printed are Oooops and "Nice Try!",
+* never "Guter Versuch!"
+* Also note that connection failures (Oooops) are printed twice - why do you
+* think that happens?
 */
-object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(968); 
+object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(1106); 
   println("Welcome to the Scala worksheet");$skip(70); 
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray;System.out.println("""EMail1  : Array[Byte] = """ + $show(EMail1 ));$skip(70); 
@@ -114,7 +117,7 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
        
 			
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(3607); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(3674); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
@@ -123,9 +126,9 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     /* Although the Await.ready method is blocking, the internal use of blocking ensures
     * that the underlying ExecutionContext is prepared to properly manage the blocking.
     * You can uncomment this line to slow down the rate at which new asynchronous
-    * computations are spawned by the iteration.
+    * computations are spawned by the iteration, a sort of throttling.
     */
-    Await.ready(packet, 1 second)
+    //Await.ready(packet, 1 second)
     packet onComplete {
       case Success(p) => {
         println("Packet Length: " + p.length.toString + " " + i.toString)
@@ -139,7 +142,8 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       packet.flatMap(p => {
         socket.sendToSafe( p )
         })
-    Await.ready(confirmation, 1 second)
+    // Similarly, you may throttle here.
+    //Await.ready(confirmation, 1 second)
      /* This command demonstrates that the
       * confirmation Future is available throughout the scope of block()
       * unlike the previous implementation.
