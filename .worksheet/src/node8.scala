@@ -6,6 +6,8 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 import duration._
 import ExecutionContext.Implicits.global
+import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, TimeoutException, ExecutionException, blocking }
+
 
 /* This worksheet demonstrates some of the code snippets from
 * Week3, Lecture 3, "Combinators on Futures", especially Slide 8.
@@ -13,8 +15,11 @@ import ExecutionContext.Implicits.global
 * can occur in multiple ways. In particular, a sending to Europe
 * can fail, or a sending to the USA, or both.
 * Using recoverWith and recover, there are fewer failures.
+* Note that the effect of this implementation of recoverWith and recover is to hide the
+* occurrence of failures of the first sendTo.
+* The only error message that will be printed is "Nice Try!"
 */
-object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(649); 
+object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(968); 
   println("Welcome to the Scala worksheet");$skip(70); 
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray;System.out.println("""EMail1  : Array[Byte] = """ + $show(EMail1 ));$skip(70); 
@@ -99,15 +104,17 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
        def sendToSafe(packet: Array[Byte]): Future[Array[Byte]] = {
          sendTo(mailServer.europe, packet) recoverWith {
            case europeError => sendTo(mailServer.usa, packet) recover {
-         //    case usaError  =>
-       //        usaError.getCause().getMessage.map(x => x.toByte).toArray
-             case usaError =>
-               usaError.getMessage.map(x => x.toByte).toArray
+             case usaError  =>
+               usaError.getCause().toString.map(x => x.toByte).toArray
+           // The code below, as originally given in the lecture, does not
+           // demonstrate how a sendTo europe failure is hidden.
+           //  case  usaError =>
+           //    usaError.getMessage.map(x => x.toByte).toArray
        } } }
        
 			
     }
-  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(3468); 
+  };System.out.println("""packetSource: (rand: Double, prob: Double)Array[Byte]""");$skip(3607); 
 
   def block(i:Int) = {
     println("Iteration: " + i.toString)
@@ -160,7 +167,7 @@ object node8 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-  (1 to 10 toList).foreach(i =>block(i));$skip(92); 
+  (1 to 15 toList).foreach(i =>block(i));$skip(92); 
    //keeps the worksheet alive so the iterations can finish!
   blocking{Thread.sleep(3000)}}
   

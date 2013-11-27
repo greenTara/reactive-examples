@@ -6,6 +6,8 @@ import scala.util.{Try, Success, Failure}
 import scala.concurrent._
 import duration._
 import ExecutionContext.Implicits.global
+import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, TimeoutException, ExecutionException, blocking }
+
 
 /* This worksheet demonstrates some of the code snippets from
 * Week3, Lecture 3, "Combinators on Futures", especially Slide 8.
@@ -13,15 +15,18 @@ import ExecutionContext.Implicits.global
 * can occur in multiple ways. In particular, a sending to Europe
 * can fail, or a sending to the USA, or both.
 * Using recoverWith and recover, there are fewer failures.
+* Note that the effect of this implementation of recoverWith and recover is to hide the
+* occurrence of failures of the first sendTo.
+* The only error message that will be printed is "Nice Try!"
 */
 object node8 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
   val EMail1 = (for {i <- 0 to 1} yield (random*256).toByte).toArray
-                                                  //> EMail1  : Array[Byte] = Array(39, 72)
+                                                  //> EMail1  : Array[Byte] = Array(-54, 63)
   val EMail2 = (for {i <- 0 to 10} yield (random*256).toByte).toArray
-                                                  //> EMail2  : Array[Byte] = Array(46, -3, 74, -12, -99, 45, -115, -100, -95, -1,
-                                                  //|  -3)
+                                                  //> EMail2  : Array[Byte] = Array(114, -37, -8, 35, -53, -120, -108, 22, -16, 4
+                                                  //| 2, -21)
   type URL = String
   
   trait Socket {
@@ -103,10 +108,12 @@ object node8 {
        def sendToSafe(packet: Array[Byte]): Future[Array[Byte]] = {
          sendTo(mailServer.europe, packet) recoverWith {
            case europeError => sendTo(mailServer.usa, packet) recover {
-         //    case usaError  =>
-       //        usaError.getCause().getMessage.map(x => x.toByte).toArray
-             case usaError =>
-               usaError.getMessage.map(x => x.toByte).toArray
+             case usaError  =>
+               usaError.getCause().toString.map(x => x.toByte).toArray
+           // The code below, as originally given in the lecture, does not
+           // demonstrate how a sendTo europe failure is hidden.
+           //  case  usaError =>
+           //    usaError.getMessage.map(x => x.toByte).toArray
        } } }
        
 			
@@ -164,46 +171,48 @@ object node8 {
    * and it keeps the worksheet functioning long enough to see
    * some of the output of the ansynchronous computations.
    */
-  (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
-                                                  //| Packet Length: 83 1
+  (1 to 15 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Error message: Oooops 1
                                                   //| Confirmation Ready: true 1
                                                   //| Iteration: 2
-                                                  //| Message: Received 1
+                                                  //| Error message: Oooops 1
                                                   //| Packet Length: 56 2
                                                   //| Confirmation Ready: true 2
                                                   //| Iteration: 3
-                                                  //| Message: Boxed Error 2
-                                                  //| Packet Length: 38 3
+                                                  //| Message: Nice try! 2
+                                                  //| Packet Length: 56 3
                                                   //| Confirmation Ready: true 3
                                                   //| Iteration: 4
-                                                  //| Message: Received 3
-                                                  //| Packet Length: 83 4
+                                                  //| Message: Nice try! 3
+                                                  //| Packet Length: 56 4
                                                   //| Confirmation Ready: true 4
                                                   //| Iteration: 5
-                                                  //| Message: Received 4
-                                                  //| Packet Length: 65 5
+                                                  //| Message: Nice try! 4
+                                                  //| Packet Length: 56 5
                                                   //| Confirmation Ready: true 5
                                                   //| Iteration: 6
-                                                  //| Message: Received 5
+                                                  //| Message: Nice try! 5
+                                                  //| Packet Length: 74 6
                                                   //| Confirmation Ready: true 6
-                                                  //| Error message: Oooops 6
-                                                  //| Error message: Oooops 6
                                                   //| Iteration: 7
-                                                  //| Packet Length: 38 7
+                                                  //| Message: Nice try! 6
+                                                  //| Packet Length: 47 7
                                                   //| Confirmation Ready: true 7
                                                   //| Iteration: 8
                                                   //| Message: Received 7
-                                                  //| Packet Length: 65 8
+                                                  //| Packet Length: 92 8
                                                   //| Confirmation Ready: true 8
                                                   //| Iteration: 9
-                                                  //| Message: Received 8
-                                                  //| Packet Length: 38 9
+                                                  //| Message: Nice try! 8
+                                                  //| Packet Length: 74 9
                                                   //| Confirmation Ready: true 9
                                                   //| Iteration: 10
-                                                  //| Message: Received 9
-                                                  //| Packet Length: 65 10
+                                                  //| Message: Nice try! 9
+                                                  //| Packet Length: 74 10
                                                   //| Confirmation Ready: true 10
+                                                  //| It
+                                                  //| Output exceeds cutoff limit.
    //keeps the worksheet alive so the iterations can finish!
-  blocking{Thread.sleep(3000)}                    //> Message: Received 10-
+  blocking{Thread.sleep(3000)}                    //> Message: Received 15-
   
 }
