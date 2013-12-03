@@ -12,32 +12,33 @@ import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, Timeou
 
 
 object node11 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(489); 
-  println("Welcome to the Scala worksheet");$skip(320); 
+  println("Welcome to the Scala worksheet");$skip(403); 
   
   /**
   * Retry successfully completing block at most noTimes
   * and give up after that
   */
-  def retry[T](noTimes: Int)(block: =>Future[T]): Future[T] = {
-    if (noTimes ==0) {
-     Future.failed(new Exception("Sorry"))
-    } else {
-      block fallbackTo {
-        retry(noTimes - 1) { block }
-      }
-    }
-  };System.out.println("""retry: [T](noTimes: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Future[T]""");$skip(69); 
+  
+   def retry[T](n: Int)(block: =>Future[T]): Future[T] = {
+    val ns: Iterator[Int] = (1 to n).iterator
+    val attempts: Iterator[()=>Future[T]] = ns.map(_ => ()=>block)
+    val failed: Future[T] = Future.failed(new Exception)
+    attempts.foldLeft(failed)((a, block) => a fallbackTo { block() })
+  };System.out.println("""retry: [T](n: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Future[T]""");$skip(114); 
   def rb(i: Int) = {
+    blocking{Thread.sleep(100*random.toInt)}
     println("Hi " ++ i.toString)
     i + 10
-  };System.out.println("""rb: (i: Int)Int""");$skip(204); 
+  };System.out.println("""rb: (i: Int)Int""");$skip(357); 
   def block(i: Int) = {
     println("Iteration: " + i.toString)
     
     val ri = retry(i)( Future {rb(i)} )
     
     ri onComplete {
-      case r => println(r.toString  + " " + i.toString)
+      case Success(s) => println(s.toString  ++ " = 10 + " ++ i.toString)
+      case Failure(t:Exception) => println(t.toString  ++ " " ++ i.toString)
+      case r => println(r.toString  ++ " " ++ i.toString)
     }
     
 	};System.out.println("""block: (i: Int)Unit""");$skip(354); 

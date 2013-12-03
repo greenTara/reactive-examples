@@ -47,7 +47,7 @@ object node9 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
       //f.map(x => Try(x))  // in case Try(x) fails, returns Failure, not Success(Failure)
      f.map(s=>Success(s)) recover { case t => Failure(t)}
     }
-  };$skip(1267); 
+  };$skip(1285); 
   
   
   /* Exception handling with flatMap.
@@ -57,10 +57,10 @@ object node9 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
     def fail = (random < 0.5)
     println(fail.toString)
     val f = Future[Int] {
-       blocking{Thread.sleep(100)}
+       blocking{Thread.sleep(100*random.toInt)}
        if (fail)
          throw(new Error("Oooops!"))
-       else i
+       else i + 10
     }
     val ftry:Future[Try[Int]] = Try( f )
     ftry onComplete {case r => println(r.toString  ++ " " ++ i.toString)  }

@@ -6,28 +6,44 @@ import scala.concurrent._
 import duration._
 import ExecutionContext.Implicits.global
 import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, TimeoutException, ExecutionException, blocking }
+import scala.async.Async._
 /* This worksheet demonstrates some of the code snippets from
 * Week3, Lecture 4, "Composing Futures".
 */
 
 
-object node10 {
+object node13 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
   
   /**
   * Retry successfully completing block at most noTimes
   * and give up after that
   */
-  def retry[T](noTimes: Int)(block: =>Future[T]): Future[T] = {
-    if (noTimes ==0) {
-     Future.failed(new Exception("Sorry"))
-    } else {
-      block fallbackTo {
-        retry(noTimes - 1) { block }
+
+  def withTry[T](future: Future[T])(implicit executor: ExecutionContext): Future[Try[T]] = {
+    future.map(Success(_)) recover { case t: Throwable => Failure(t) }
+  }                                               //> withTry: [T](future: scala.concurrent.Future[T])(implicit executor: scala.co
+                                                  //| ncurrent.ExecutionContext)scala.concurrent.Future[scala.util.Try[T]]
+  
+ def retry[T](n: Int)(block: =>Future[T])(implicit executor: ExecutionContext): Future[T] = async {
+    var i: Int = 0
+    var result: Try[T] = Failure(new Exception("Oops"))
+
+    while (i < n) {
+      result = await { withTry(block) }
+
+      result match {
+        case Success(s) => { i = i + 1 }
+        case Failure(f) => { i = n }
       }
     }
-  }                                               //> retry: [T](noTimes: Int)(block: => scala.concurrent.Future[T])scala.concurre
-                                                  //| nt.Future[T]
+
+    result.get
+  }                                               //> retry: [T](n: Int)(block: => scala.concurrent.Future[T])(implicit executor:
+                                                  //|  scala.concurrent.ExecutionContext)scala.concurrent.Future[T]
+
+
+             
   def rb(i: Int) = {
     blocking{Thread.sleep(100*random.toInt)}
     println("Hi " ++ i.toString)
@@ -55,23 +71,22 @@ object node10 {
                                                   //| Iteration: 1
                                                   //| Iteration: 2
                                                   //| Iteration: 3
-                                                  //| java.lang.Exception: Sorry 0
                                                   //| Iteration: 4
-    blocking{Thread.sleep(3000)}                  //> Hi 3
-                                                  //| Hi 4
+    blocking{Thread.sleep(3000)}                  //> java.lang.Exception: Oops 0
+                                                  //| Hi 3
                                                   //| Hi 1
                                                   //| Hi 2
                                                   //| Hi 3
                                                   //| Hi 4
                                                   //| Hi 2
+                                                  //| 11 = 10 + 1
+                                                  //| Hi 4
                                                   //| Hi 3
                                                   //| Hi 4
-                                                  //| 11 = 10 + 1
-                                                  //| 14 = 10 + 4
                                                   //| 13 = 10 + 3
+                                                  //| Hi 4
                                                   //| 12 = 10 + 2
-                                                  //| Hi 4-
-
+                                                  //| 14 = 10 + 4-
 
    
 }

@@ -57,10 +57,10 @@ object node9 {
     def fail = (random < 0.5)
     println(fail.toString)
     val f = Future[Int] {
-       blocking{Thread.sleep(100)}
+       blocking{Thread.sleep(100*random.toInt)}
        if (fail)
          throw(new Error("Oooops!"))
-       else i
+       else i + 10
     }
     val ftry:Future[Try[Int]] = Try( f )
     ftry onComplete {case r => println(r.toString  ++ " " ++ i.toString)  }
@@ -75,15 +75,15 @@ object node9 {
   (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
                                                   //| true
                                                   //| Iteration: 2
-                                                  //| false
+                                                  //| true
                                                   //| Iteration: 3
                                                   //| true
                                                   //| Iteration: 4
-                                                  //| false
-                                                  //| Iteration: 5
-                                                  //| false
-                                                  //| Iteration: 6
                                                   //| true
+                                                  //| Iteration: 5
+                                                  //| true
+                                                  //| Iteration: 6
+                                                  //| false
                                                   //| Iteration: 7
                                                   //| true
                                                   //| Iteration: 8
@@ -91,17 +91,17 @@ object node9 {
                                                   //| Iteration: 9
                                                   //| true
                                                   //| Iteration: 10
-                                                  //| false
-    blocking{Thread.sleep(3000)}                  //> Success(Success(7)) 7
-                                                  //| Success(Success(4)) 4
-                                                  //| Success(Success(6)) 6
-                                                  //| Success(Success(3)) 3
-                                                  //| Success(Success(1)) 1
-                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 2
-                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 9
-                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 10
+                                                  //| true
+    blocking{Thread.sleep(3000)}                  //> Success(Success(11)) 1
+                                                  //| Success(Success(17)) 7
+                                                  //| Success(Success(14)) 4
+                                                  //| Success(Success(15)) 5
+                                                  //| Success(Success(20)) 10
+                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 3
+                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 6
                                                   //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 8
-                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 5/
+                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 2
+                                                  //| Success(Failure(java.util.concurrent.ExecutionException: Boxed Error)) 9/
 
 
    

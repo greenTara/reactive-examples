@@ -10,23 +10,22 @@ import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, Timeou
 * Week3, Lecture 4, "Composing Futures".
 */
 
-
-object node10 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(489); 
-  println("Welcome to the Scala worksheet");$skip(320); 
+object node12 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(488); 
+  println("Welcome to the Scala worksheet");$skip(423); 
   
   /**
   * Retry successfully completing block at most noTimes
   * and give up after that
   */
-  def retry[T](noTimes: Int)(block: =>Future[T]): Future[T] = {
-    if (noTimes ==0) {
-     Future.failed(new Exception("Sorry"))
-    } else {
-      block fallbackTo {
-        retry(noTimes - 1) { block }
-      }
-    }
-  };System.out.println("""retry: [T](noTimes: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Future[T]""");$skip(114); 
+  
+  
+   def retry[T](n: Int)(block: =>Future[T]): Future[T] = {
+    val ns: Iterator[Int] = (1 to n).iterator
+    val attempts: Iterator[()=>Future[T]] = ns.map(_ => ()=>block)
+    val failed: Future[T] = Future.failed(new Exception)
+    attempts.foldRight(()=>failed)((block, a) => ()=> { block() fallbackTo{ a() }}) ()
+  };System.out.println("""retry: [T](n: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Future[T]""");$skip(128); 
+             
   def rb(i: Int) = {
     blocking{Thread.sleep(100*random.toInt)}
     println("Hi " ++ i.toString)
@@ -52,7 +51,5 @@ object node10 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._
    */
   (0 to 4 toList).foreach(i =>block(i));$skip(33); 
     blocking{Thread.sleep(3000)}}
-
-
    
 }

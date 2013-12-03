@@ -18,17 +18,16 @@ object node11 {
   * Retry successfully completing block at most noTimes
   * and give up after that
   */
-  def retry[T](noTimes: Int)(block: =>Future[T]): Future[T] = {
-    if (noTimes ==0) {
-     Future.failed(new Exception("Sorry"))
-    } else {
-      block fallbackTo {
-        retry(noTimes - 1) { block }
-      }
-    }
-  }                                               //> retry: [T](noTimes: Int)(block: => scala.concurrent.Future[T])scala.concurre
-                                                  //| nt.Future[T]
+  
+   def retry[T](n: Int)(block: =>Future[T]): Future[T] = {
+    val ns: Iterator[Int] = (1 to n).iterator
+    val attempts: Iterator[()=>Future[T]] = ns.map(_ => ()=>block)
+    val failed: Future[T] = Future.failed(new Exception)
+    attempts.foldLeft(failed)((a, block) => a fallbackTo { block() })
+  }                                               //> retry: [T](n: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Fut
+                                                  //| ure[T]
   def rb(i: Int) = {
+    blocking{Thread.sleep(100*random.toInt)}
     println("Hi " ++ i.toString)
     i + 10
   }                                               //> rb: (i: Int)Int
@@ -38,7 +37,9 @@ object node11 {
     val ri = retry(i)( Future {rb(i)} )
     
     ri onComplete {
-      case r => println(r.toString  + " " + i.toString)
+      case Success(s) => println(s.toString  ++ " = 10 + " ++ i.toString)
+      case Failure(t:Exception) => println(t.toString  ++ " " ++ i.toString)
+      case r => println(r.toString  ++ " " ++ i.toString)
     }
     
 	}                                         //> block: (i: Int)Unit
@@ -50,23 +51,23 @@ object node11 {
    */
   (0 to 4 toList).foreach(i =>block(i))           //> Iteration: 0
                                                   //| Iteration: 1
-                                                  //| Failure(java.lang.Exception: Sorry) 0
-                                                  //| Iteration: 2
-                                                  //| Iteration: 3
-                                                  //| Iteration: 4
-    blocking{Thread.sleep(3000)}                  //> Hi 3
-                                                  //| Hi 3
-                                                  //| Hi 4
-                                                  //| Hi 4
+                                                  //| java.lang.Exception 0
                                                   //| Hi 1
+                                                  //| Iteration: 2
+                                                  //| 11 = 10 + 1
                                                   //| Hi 2
-                                                  //| Hi 2
+                                                  //| Iteration: 3
                                                   //| Hi 3
+                                                  //| Hi 2
+                                                  //| Iteration: 4
+                                                  //| 12 = 10 + 2
+    blocking{Thread.sleep(3000)}                  //> Hi 4
+                                                  //| Hi 3
+                                                  //| 13 = 10 + 3
+                                                  //| Hi 3
+                                                  //| 14 = 10 + 4
                                                   //| Hi 4
-                                                  //| Success(11) 1
-                                                  //| Success(14) 4
-                                                  //| Success(13) 3
-                                                  //| Success(12) 2
+                                                  //| Hi 4
                                                   //| Hi 4-
 
 

@@ -6,27 +6,42 @@ import scala.concurrent._
 import duration._
 import ExecutionContext.Implicits.global
 import scala.concurrent.{ ExecutionContext, CanAwait, OnCompleteRunnable, TimeoutException, ExecutionException, blocking }
+import scala.async.Async._
 /* This worksheet demonstrates some of the code snippets from
 * Week3, Lecture 4, "Composing Futures".
 */
 
 
-object node10 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(489); 
-  println("Welcome to the Scala worksheet");$skip(320); 
+object node13 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(516); 
+  println("Welcome to the Scala worksheet");$skip(266); 
   
   /**
   * Retry successfully completing block at most noTimes
   * and give up after that
   */
-  def retry[T](noTimes: Int)(block: =>Future[T]): Future[T] = {
-    if (noTimes ==0) {
-     Future.failed(new Exception("Sorry"))
-    } else {
-      block fallbackTo {
-        retry(noTimes - 1) { block }
+
+  def withTry[T](future: Future[T])(implicit executor: ExecutionContext): Future[Try[T]] = {
+    future.map(Success(_)) recover { case t: Throwable => Failure(t) }
+  };System.out.println("""withTry: [T](future: scala.concurrent.Future[T])(implicit executor: scala.concurrent.ExecutionContext)scala.concurrent.Future[scala.util.Try[T]]""");$skip(373); 
+  
+ def retry[T](n: Int)(block: =>Future[T])(implicit executor: ExecutionContext): Future[T] = async {
+    var i: Int = 0
+    var result: Try[T] = Failure(new Exception("Oops"))
+
+    while (i < n) {
+      result = await { withTry(block) }
+
+      result match {
+        case Success(s) => { i = i + 1 }
+        case Failure(f) => { i = n }
       }
     }
-  };System.out.println("""retry: [T](noTimes: Int)(block: => scala.concurrent.Future[T])scala.concurrent.Future[T]""");$skip(114); 
+
+    result.get
+  };System.out.println("""retry: [T](n: Int)(block: => scala.concurrent.Future[T])(implicit executor: scala.concurrent.ExecutionContext)scala.concurrent.Future[T]""");$skip(130); 
+
+
+             
   def rb(i: Int) = {
     blocking{Thread.sleep(100*random.toInt)}
     println("Hi " ++ i.toString)
@@ -52,7 +67,6 @@ object node10 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._
    */
   (0 to 4 toList).foreach(i =>block(i));$skip(33); 
     blocking{Thread.sleep(3000)}}
-
 
    
 }

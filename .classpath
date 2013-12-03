@@ -5,6 +5,8 @@
   <classpathentry output="target/scala-2.10/test-classes" path="src/test/java" kind="src"></classpathentry>
   <classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER"></classpathentry>
   <classpathentry path="/Users/taraathan/.ivy2/cache/org.apache.commons/commons-lang3/jars/commons-lang3-3.1.jar" kind="lib"></classpathentry>
+  <classpathentry path="/Users/taraathan/.ivy2/cache/org.scala-lang.modules/scala-async_2.10/bundles/scala-async_2.10-0.9.0-M2.jar" kind="lib"></classpathentry>
+  <classpathentry path="/Users/taraathan/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.10.3.jar" kind="lib"></classpathentry>
   <classpathentry path="org.eclipse.jdt.launching.JRE_CONTAINER" kind="con"></classpathentry>
   <classpathentry path="bin" kind="output"></classpathentry>
 </classpath>
