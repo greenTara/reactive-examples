@@ -9,15 +9,17 @@ import scala.io.Source
 * Review of Iterators
 */
 
-
-
 object ob11 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
- def printOut[T](i:Int)(iter:Iterator[T]): Unit =
-   while(iter.hasNext) {
-      println("i = " + i.toString + ", next = " + iter.next().toString)
-   }                                              //> printOut: [T](i: Int)(iter: Iterator[T])Unit
+ def printOut[T](i:Int)(iter:Iterator[T])(num:Int): Unit = {
+   val iterP =
+     if (num > 0 ) iter.take(num)
+     else iter
+   while(iterP.hasNext) {
+      println("i = " + i.toString + ", next = " + iterP.next().toString)
+   }
+  }                                               //> printOut: [T](i: Int)(iter: Iterator[T])(num: Int)Unit
    
   def ReadLinesFromDisk(path: String): Iterator[String] = {
     Source.fromFile(path).getLines()
@@ -28,32 +30,38 @@ object ob11 {
   val path = url.getPath()                        //> path  : String = /Users/taraathan/ScalaCoursera/Github/reactive-examples/tar
                                                   //| get/scala-2.10/classes/observable/poem.txt
    
-  def block(i: Int) = {
+  def block(i: Int)(num: Int) = {
     println("Iteration: " + i.toString)
     
     val iter0 = (0 to (i+2) by 2).iterator
     val iter1 = (1 to (i+3) by 2).iterator
+    val iterInf = Iterator.continually {
+    Thread.sleep(100)
+    1
+    }
    
     val iter = i match {
       case 0  =>  iter0.flatMap( n => (n*10 to (n*10 + 5) by 1).iterator )
       case 1 => iter0.map( n => n*n )
-      case 2 => iter0 ++ iter1
-      case 3 => iter0.filter( n => n%4 == 0 )
-      case 4 => iter0.take(3)
-      case 5 => iter0.takeWhile(n => (n < 5))
-      case 6 => iter0.zip(iter1)
-      case 7 => ReadLinesFromDisk(path)
+      case 2 => iter0 ++ iter0 //this just returns iter0 - why is that?
+      case 3 => iter0 ++ iter1
+      case 4 => iter0.filter( n => n%4 == 0 )
+      case 5 => iter0.take(3)
+      case 6 => iter0.takeWhile(n => (n < 5))
+      case 7 => iter0.zip(iter1)
+      case 8 => ReadLinesFromDisk(path)
+      case 9 => iterInf.filter( n => (n < 0) )
    }
-   printOut(i)(iter) //An iterator can't be traversed more than once.
+   printOut(i)(iter)(num) //An iterator can't be traversed more than once.
        
-	}                                         //> block: (i: Int)Unit
+	}                                         //> block: (i: Int)(num: Int)Unit
   /* Multiple executions of a block of commands where
    * each block contains one collectCoins and
    * one buyTreasure. If either call fails, the whole iteration does not fail,
    * because we are catching exceptions (with flatMap) in this implementation.
    * Note that these blocks execute synchrounsly.
    */
-  (0 to 7 toList).foreach(i =>block(i))           //> Iteration: 0
+  (0 to 3 toList).foreach(i =>block(i)(-1))       //> Iteration: 0
                                                   //| i = 0, next = 0
                                                   //| i = 0, next = 1
                                                   //| i = 0, next = 2
@@ -73,32 +81,43 @@ object ob11 {
                                                   //| i = 2, next = 0
                                                   //| i = 2, next = 2
                                                   //| i = 2, next = 4
-                                                  //| i = 2, next = 1
-                                                  //| i = 2, next = 3
-                                                  //| i = 2, next = 5
                                                   //| Iteration: 3
                                                   //| i = 3, next = 0
+                                                  //| i = 3, next = 2
                                                   //| i = 3, next = 4
-                                                  //| Iteration: 4
+                                                  //| i = 3, next = 1
+                                                  //| i = 3, next = 3
+                                                  //| i = 3, next = 5
+  //breaking things up because output exceeded limit
+  (4 to 8 toList).foreach(i =>block(i)(5))        //> Iteration: 4
                                                   //| i = 4, next = 0
-                                                  //| i = 4, next = 2
                                                   //| i = 4, next = 4
                                                   //| Iteration: 5
                                                   //| i = 5, next = 0
                                                   //| i = 5, next = 2
                                                   //| i = 5, next = 4
                                                   //| Iteration: 6
-                                                  //| i = 6, next = (0,1)
-                                                  //| i = 6, next = (2,3)
-                                                  //| i = 6, next = (4,5)
-                                                  //| i = 6, next = (6,7)
-                                                  //| i = 6, next = (8,9)
+                                                  //| i = 6, next = 0
+                                                  //| i = 6, next = 2
+                                                  //| i = 6, next = 4
                                                   //| Iteration: 7
-                                                  //| i = 7, next = Two roads diverged in a yellow wood,
-                                                  //| i = 7, next = And sorry I could not travel both
-                                                  //| i = 7, next = And be on
-                                                  //| Output exceeds cutoff limit.
-   
+                                                  //| i = 7, next = (0,1)
+                                                  //| i = 7, next = (2,3)
+                                                  //| i = 7, next = (4,5)
+                                                  //| i = 7, next = (6,7)
+                                                  //| i = 7, next = (8,9)
+                                                  //| Iteration: 8
+                                                  //| i = 8, next = Two roads diverged in a yellow wood,
+                                                  //| i = 8, next = And sorry I could not travel both
+                                                  //| i = 8, next = And be one traveler, long I stood
+                                                  //| i = 8, next = And looked down one as far as I could
+                                                  //| i = 8, next = To where it bent in the undergrowth;
+
+  // This step will never finish, even
+  // though the filter is never satisfied
+  // The worksheet can be terminated by closing it.
+  //block(9)(num = 5)
+  println("Done")                                 //> Done
     //blocking{Thread.sleep(3000)} // only needed for asynchronous worksheets
    
 }
