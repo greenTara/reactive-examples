@@ -26,16 +26,16 @@ object ob11 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
   };System.out.println("""ReadLinesFromDisk: (path: String)Iterator[String]""");$skip(51); 
    
   val url = getClass().getResource("poem.txt");System.out.println("""url  : java.net.URL = """ + $show(url ));$skip(27); 
-  val path = url.getPath();System.out.println("""path  : String = """ + $show(path ));$skip(822); 
+  val path = url.getPath();System.out.println("""path  : String = """ + $show(path ));$skip(825); 
    
   def block(i: Int)(num: Int) = {
-    println("Iteration: " + i.toString)
+    println("Iterable: " + i.toString)
     
     val iter0 = (0 to (i+2) by 2).iterator
     val iter1 = (1 to (i+3) by 2).iterator
     val iterInf = Iterator.continually {
-    Thread.sleep(100)
-    1
+      Thread.sleep(100)
+      1
     }
    
     val iter = i match {

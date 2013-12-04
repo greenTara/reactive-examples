@@ -31,13 +31,13 @@ object ob11 {
                                                   //| get/scala-2.10/classes/observable/poem.txt
    
   def block(i: Int)(num: Int) = {
-    println("Iteration: " + i.toString)
+    println("Iterable: " + i.toString)
     
     val iter0 = (0 to (i+2) by 2).iterator
     val iter1 = (1 to (i+3) by 2).iterator
     val iterInf = Iterator.continually {
-    Thread.sleep(100)
-    1
+      Thread.sleep(100)
+      1
     }
    
     val iter = i match {
@@ -61,7 +61,7 @@ object ob11 {
    * because we are catching exceptions (with flatMap) in this implementation.
    * Note that these blocks execute synchrounsly.
    */
-  (0 to 3 toList).foreach(i =>block(i)(-1))       //> Iteration: 0
+  (0 to 3 toList).foreach(i =>block(i)(-1))       //> Iterable: 0
                                                   //| i = 0, next = 0
                                                   //| i = 0, next = 1
                                                   //| i = 0, next = 2
@@ -74,14 +74,14 @@ object ob11 {
                                                   //| i = 0, next = 23
                                                   //| i = 0, next = 24
                                                   //| i = 0, next = 25
-                                                  //| Iteration: 1
+                                                  //| Iterable: 1
                                                   //| i = 1, next = 0
                                                   //| i = 1, next = 4
-                                                  //| Iteration: 2
+                                                  //| Iterable: 2
                                                   //| i = 2, next = 0
                                                   //| i = 2, next = 2
                                                   //| i = 2, next = 4
-                                                  //| Iteration: 3
+                                                  //| Iterable: 3
                                                   //| i = 3, next = 0
                                                   //| i = 3, next = 2
                                                   //| i = 3, next = 4
@@ -89,24 +89,24 @@ object ob11 {
                                                   //| i = 3, next = 3
                                                   //| i = 3, next = 5
   //breaking things up because output exceeded limit
-  (4 to 8 toList).foreach(i =>block(i)(5))        //> Iteration: 4
+  (4 to 8 toList).foreach(i =>block(i)(5))        //> Iterable: 4
                                                   //| i = 4, next = 0
                                                   //| i = 4, next = 4
-                                                  //| Iteration: 5
+                                                  //| Iterable: 5
                                                   //| i = 5, next = 0
                                                   //| i = 5, next = 2
                                                   //| i = 5, next = 4
-                                                  //| Iteration: 6
+                                                  //| Iterable: 6
                                                   //| i = 6, next = 0
                                                   //| i = 6, next = 2
                                                   //| i = 6, next = 4
-                                                  //| Iteration: 7
+                                                  //| Iterable: 7
                                                   //| i = 7, next = (0,1)
                                                   //| i = 7, next = (2,3)
                                                   //| i = 7, next = (4,5)
                                                   //| i = 7, next = (6,7)
                                                   //| i = 7, next = (8,9)
-                                                  //| Iteration: 8
+                                                  //| Iterable: 8
                                                   //| i = 8, next = Two roads diverged in a yellow wood,
                                                   //| i = 8, next = And sorry I could not travel both
                                                   //| i = 8, next = And be one traveler, long I stood
