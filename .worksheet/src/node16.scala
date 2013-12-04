@@ -13,14 +13,14 @@ import scala.async.Async._
 
 
 object node16 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(511); 
-  println("Welcome to the Scala worksheet");$skip(396); 
+  println("Welcome to the Scala worksheet");$skip(409); 
   
   def filter[T](future: Future[T], predicate: T => Boolean)(implicit executor: ExecutionContext): Future[T] = {
     val p = Promise[T]()
     future.onComplete {
       case Success(s) => {
         if(!predicate(s)) {
-          p.failure(new Exception("No such element"))
+          p.failure(new NoSuchElementException("No such element"))
         } else {
           p.success(s)
         }
@@ -44,7 +44,7 @@ object node16 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._
        else i + 10
     }
   
-   val f2 = filter[Int](f, (i => (i < 15)))
+   val f2 = filter[Int](f, (i => (i < 12)))
    
     f2 onComplete {
       case Success(s) => println(s.toString  ++ " = 10 + " ++ i.toString)
@@ -52,14 +52,14 @@ object node16 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._
       case Failure(t) => println(t.getCause().toString  ++ " " ++ i.toString)
       }
     
-	};System.out.println("""block: (i: Int)Unit""");$skip(355); 
+	};System.out.println("""block: (i: Int)Unit""");$skip(354); 
   /* Multiple executions of a block of commands where
    * each block contains one collectCoins and
    * one buyTreasure. If either call fails, the whole iteration does not fail,
    * because we are catching exceptions (with flatMap) in this implementation.
    * Note that these blocks execute synchrounsly.
    */
-  (0 to 10 toList).foreach(i =>block(i));$skip(37); 
+  (0 to 4 toList).foreach(i =>block(i));$skip(37); 
    
     blocking{Thread.sleep(3000)}}
    

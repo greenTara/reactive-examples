@@ -20,7 +20,7 @@ object node16 {
     future.onComplete {
       case Success(s) => {
         if(!predicate(s)) {
-          p.failure(new Exception("No such element"))
+          p.failure(new NoSuchElementException("No such element"))
         } else {
           p.success(s)
         }
@@ -46,7 +46,7 @@ object node16 {
        else i + 10
     }
   
-   val f2 = filter[Int](f, (i => (i < 15)))
+   val f2 = filter[Int](f, (i => (i < 12)))
    
     f2 onComplete {
       case Success(s) => println(s.toString  ++ " = 10 + " ++ i.toString)
@@ -61,52 +61,21 @@ object node16 {
    * because we are catching exceptions (with flatMap) in this implementation.
    * Note that these blocks execute synchrounsly.
    */
-  (0 to 10 toList).foreach(i =>block(i))          //> Iteration: 0
-                                                  //| true
+  (0 to 4 toList).foreach(i =>block(i))           //> Iteration: 0
+                                                  //| false
                                                   //| Iteration: 1
                                                   //| true
                                                   //| Iteration: 2
-                                                  //| false
+                                                  //| true
                                                   //| Iteration: 3
                                                   //| true
                                                   //| Iteration: 4
-                                                  //| false
-                                                  //| Iteration: 5
                                                   //| true
-                                                  //| Iteration: 6
-                                                  //| false
-                                                  //| Iteration: 7
-                                                  //| false
-                                                  //| Iteration: 8
-                                                  //| false
-                                                  //| Iteration: 9
-                                                  //| false
-                                                  //| Iteration: 10
-                                                  //| false
    
-    blocking{Thread.sleep(3000)}                  //> java.lang.NullPointerException
-                                                  //| 	at node16$$anonfun$main$1$$anonfun$node16$$anonfun$$block$1$1.apply(node
-                                                  //| 16.scala:52)
-                                                  //| 	at node16$$anonfun$main$1$$anonfun$node16$$anonfun$$block$1$1.apply(node
-                                                  //| 16.scala:49)
-                                                  //| 	at scala.concurrent.impl.CallbackRunnable.run(Promise.scala:29)
-                                                  //| 	at scala.concurrent.impl.ExecutionContextImpl$$anon$3.exec(ExecutionCont
-                                                  //| extImpl.scala:107)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinTask.doExec(ForkJoinTask.java:260)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.pollAndExecAll(ForkJ
-                                                  //| oinPool.java:1253)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool$WorkQueue.runTask(ForkJoinPool
-                                                  //| .java:1346)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinPool.runWorker(ForkJoinPool.java:19
-                                                  //| 79)
-                                                  //| 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThre
-                                                  //| ad.java:107)
-                                                  //| java.lang.Error: Oooops! 6
-                                                  //| java.lang.Error: Oooops! 7
-                                                  //| 10 = 10 + 0
-                                                  //| java.lang.Error: Oooops! 4
-                                                  //| 11 = 10 + 1
-                                                  //| 
-                                                  //| Output exceeds cutoff limit.-
+    blocking{Thread.sleep(3000)}                  //> 11 = 10 + 1
+                                                  //| No such element 2
+                                                  //| java.lang.Error: Oooops! 0
+                                                  //| java.lang.Error: Oooops! 3
+                                                  //| No such element 4-
    
 }
