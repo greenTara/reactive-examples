@@ -1,12 +1,9 @@
 package observable
 
 import scala.language.postfixOps
-import math.random
 import rx.lang.scala.Observable
 import scala.concurrent._
-import scala.io.Source
 import duration._
-import scala.util.{Try, Success, Failure}
 
 /* This worksheet demonstrates some of the code snippets from
 * Week4, Lecture 1, "Futures to Observables".
@@ -15,23 +12,28 @@ import scala.util.{Try, Success, Failure}
 
 object ob12 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
-  
-  val lng:Long = 1                                //> lng  : Long = 1
-
+    
  def printOut[T](i:Int)(obs:Observable[T])(num:Int)(msg:String): Unit = {
+   blocking{Thread.sleep(20)}
+   val is = i.toString
    val obsP =
      if (num > 0 ) obs.take(num)
      else obs
-   obsP.subscribe( { it =>
-      println("i = " + i.toString + ", obs:  " + msg + ", next = " + it.toString)
-   })
+   obsP.subscribe(
+     it => {
+      val itOut = it.toString
+      println(f"i = $is, obs: $msg, next = $itOut")
+      },
+        error => println(f"$is Ooops"),
+        () =>    println(f"$is Completed")
+   )
   }                                               //> printOut: [T](i: Int)(obs: rx.lang.scala.Observable[T])(num: Int)(msg: Strin
                                                   //| g)Unit
      
   def block(i: Int)(num: Int) = {
     println("Observable: " + i.toString)
     
-    val ticks: Observable[Long] = Observable.interval(1 second)
+    val ticks: Observable[Long] = Observable.interval((i + 1) second)
     val evens: Observable[Long] = ticks.filter(s => (s%2 == 0))
     val bufs: Observable[Seq[Long]] = ticks.buffer(2, 1)
     val fails: Observable[Long] = ticks.take(3) ++ Observable(new Exception("oops")) ++ ticks
@@ -40,33 +42,40 @@ object ob12 {
     printOut(i)(ticks)(num)("ticks")
     printOut(i)(evens)(num)("evens")
     printOut(i)(bufs)(num)("bufs")
-    printOut(i)(fails)(num)("fails") // notice that the printout stops after the failure
+    printOut(i)(fails)(num)("fails") // notice that this printOut stops after the failure
        
 	}                                         //> block: (i: Int)(num: Int)Unit
 
-  // multiple executions of the block are not necessary for this demo
-  // although they would be possible, and would execute asynchronously.
-	block(0)(-1)                              //> Observable: 0
+  // multiple executions of the block execute asynchronously.
+	(0 to 1 toList).foreach(i =>block(i)(-1)) //> Observable: 0
+                                                  //| Observable: 1
 
   // We are printing out observables of infinite length, so
   // the only reason the worksheet terminates is that we block here
-  // for a finite duration (10 seconds).
+  // for a finite duration (5 seconds).
   blocking{Thread.sleep(5000)} // needed for asynchronous worksheets
-                                                  //> i = 0, obs:  ticks, next = 0
-                                                  //| i = 0, obs:  evens, next = 0
-                                                  //| i = 0, obs:  fails, next = 0
-                                                  //| i = 0, obs:  ticks, next = 1
-                                                  //| i = 0, obs:  fails, next = 1
-                                                  //| i = 0, obs:  bufs, next = Buffer(0, 1)
-                                                  //| i = 0, obs:  ticks, next = 2
-                                                  //| i = 0, obs:  evens, next = 2
-                                                  //| i = 0, obs:  bufs, next = Buffer(1, 2)
-                                                  //| i = 0, obs:  fails, next = 2
-                                                  //| i = 0, obs:  ticks, next = 3
-                                                  //| i = 0, obs:  bufs, next = Buffer(2, 3)
-                                                  //| i = 0, obs:  ticks, next = 4
-                                                  //| i = 0, obs:  evens, next = 4
-                                                  //| i = 0, obs:  bufs, next = Buffer(3, 4)
+                                                  //> i = 0, obs: ticks, next = 0
+                                                  //| i = 0, obs: evens, next = 0
+                                                  //| i = 0, obs: fails, next = 0
+                                                  //| i = 0, obs: ticks, next = 1
+                                                  //| i = 0, obs: bufs, next = Buffer(0, 1)
+                                                  //| i = 0, obs: fails, next = 1
+                                                  //| i = 1, obs: ticks, next = 0
+                                                  //| i = 1, obs: evens, next = 0
+                                                  //| i = 1, obs: fails, next = 0
+                                                  //| i = 0, obs: ticks, next = 2
+                                                  //| i = 0, obs: evens, next = 2
+                                                  //| i = 0, obs: bufs, next = Buffer(1, 2)
+                                                  //| i = 0, obs: fails, next = 2
+                                                  //| 0 Ooops
+                                                  //| i = 0, obs: ticks, next = 3
+                                                  //| i = 0, obs: bufs, next = Buffer(2, 3)
+                                                  //| i = 1, obs: ticks, next = 1
+                                                  //| i = 1, obs: bufs, next = Buffer(0, 1)
+                                                  //| i = 1, obs: fails, next = 1
+                                                  //| i = 0, obs: ticks, next = 4
+                                                  //| i = 0, obs: evens, next = 4
+                                                  //| i = 0, obs: bufs, next = Buffer(3, 4)
   println("Done")                                 //> Done
    
 }
