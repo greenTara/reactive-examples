@@ -92,5 +92,6 @@ object node1 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._;
    */
   (1 to 10 toList).foreach(i =>block(i))}
   
+  
    
 }

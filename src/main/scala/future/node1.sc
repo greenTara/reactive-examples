@@ -91,6 +91,16 @@ object node1 {
    * Note that these blocks execute synchrounsly.
    */
   (1 to 10 toList).foreach(i =>block(i))          //> Iteration: 1
+                                                  //| Treasure: Diamond 1
+                                                  //| Iteration: 2
+                                                  //| Treasure: Diamond 2
+                                                  //| Iteration: 3
+                                                  //| Treasure: Diamond 3
+                                                  //| Iteration: 4
+                                                  //| Treasure: Diamond 4
+                                                  //| Iteration: 5
+                                                  //| Treasure: Diamond 5
+                                                  //| Iteration: 6
                                                   //| Oooops
                                                   //| 	at node1$$anonfun$main$1$AdventureFactory$2$$anon$1.collectCoins(node1.s
                                                   //| cala:64)
@@ -104,11 +114,9 @@ object node1 {
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$$anonfun$$exe
                                                   //| cute$1.apply$mcV$sp(WorksheetSupport.scala:76)
                                                   //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.redirected(W
-                                                  //| orksheetSupport.scala:65)
-                                                  //| 	at org.scalaide.worksheet.runtime.library.WorksheetSupport$.$execute(Wor
-                                                  //| ksheetSupport.scala:75)
-                                                  //| 	at node1$.main(node1.scala:8)
-                                                  //| 	at node1.main(node1.scala)
+                                                  //| orkshe
+                                                  //| Output exceeds cutoff limit.
+  
   
    
 }

@@ -64,21 +64,21 @@ object node16 {
   (0 to 10 toList).foreach(i =>block(i))          //> Iteration: 0
                                                   //| true
                                                   //| Iteration: 1
-                                                  //| false
+                                                  //| true
                                                   //| Iteration: 2
                                                   //| false
                                                   //| Iteration: 3
-                                                  //| false
+                                                  //| true
                                                   //| Iteration: 4
                                                   //| false
                                                   //| Iteration: 5
-                                                  //| false
+                                                  //| true
                                                   //| Iteration: 6
                                                   //| false
                                                   //| Iteration: 7
-                                                  //| true
+                                                  //| false
                                                   //| Iteration: 8
-                                                  //| true
+                                                  //| false
                                                   //| Iteration: 9
                                                   //| false
                                                   //| Iteration: 10
@@ -101,8 +101,12 @@ object node16 {
                                                   //| 79)
                                                   //| 	at scala.concurrent.forkjoin.ForkJoinWorkerThread.run(ForkJoinWorkerThre
                                                   //| ad.java:107)
-                                                  //| java.lang.NullPointerException
-                                                  //| 	at node16$$anonfun$main$1$$anonfun$node16$$anonfun$$block$1$1.apply(node
-                                                  //| 16.scala:52)
+                                                  //| java.lang.Error: Oooops! 6
+                                                  //| java.lang.Error: Oooops! 7
+                                                  //| 10 = 10 + 0
+                                                  //| java.lang.Error: Oooops! 4
+                                                  //| 11 = 10 + 1
+                                                  //| 
+                                                  //| Output exceeds cutoff limit.-
    
 }
