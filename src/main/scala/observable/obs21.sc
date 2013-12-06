@@ -17,7 +17,7 @@ import java.util.Calendar
 object ob21 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
 
-  val t0 = System.nanoTime()                      //> t0  : Long = 1386369621925767000
+  val t0 = System.nanoTime()                      //> t0  : Long = 1386371103008956000
   def etime() = ((System.nanoTime() - t0).toDouble / 1e+9)
                                                   //> etime: ()Double
   def printOut[T](i:Int)(obs:Observable[T])(num:Int)(indent:Int): Unit = {
@@ -50,7 +50,9 @@ object ob21 {
     val xs: Observable[Int] = Observable(3,2,1)
     val yss: Observable[Observable[Int]] =
       xs.map(x => Observable.interval(x seconds).map(_=>x).take(2))
-    val zs: Observable[Int] = yss.concat
+    val zs: Observable[Int] =
+      if (i == 0) yss.concat
+      else yss.flatten
     // Unlike the iterable case, we are able to "traverse" the observable
     // multiple "times" through multiple subscriptions.
     printOut(i)(xs)(num)(1)
@@ -63,13 +65,13 @@ object ob21 {
   // although they would be possible, and would execute asynchronously.
 	block(0)(-1)                              //> Observable: 0
                                                   //| 0 (  0.08 ) 3
-                                                  //| 0 (  0.10 ) 2
-                                                  //| 0 (  0.10 ) 1
-                                                  //| 0 (  0.10 ) Completed
-                                                  //| 0           (  0.20 ) rx.lang.scala.Observable$$anon$9@135c7da7
-                                                  //| 0           (  0.21 ) rx.lang.scala.Observable$$anon$9@1d3d68df
-                                                  //| 0           (  0.21 ) rx.lang.scala.Observable$$anon$9@2ab01778
-                                                  //| 0           (  0.21 ) Completed
+                                                  //| 0 (  0.09 ) 2
+                                                  //| 0 (  0.09 ) 1
+                                                  //| 0 (  0.09 ) Completed
+                                                  //| 0           (  0.20 ) rx.lang.scala.Observable$$anon$9@1d69a562
+                                                  //| 0           (  0.20 ) rx.lang.scala.Observable$$anon$9@2e8d404
+                                                  //| 0           (  0.20 ) rx.lang.scala.Observable$$anon$9@3b7541a
+                                                  //| 0           (  0.20 ) Completed
 
   // We are printing out observables of infinite length, so
   // the only reason the worksheet terminates is that we block here
@@ -81,7 +83,24 @@ object ob21 {
                                                   //| 0                     ( 10.23 ) 2
                                                   //| 0                     ( 11.23 ) 1
                                                   //| 0                     ( 12.23 ) 1
-                                                  //| 0                     ( 12.24 ) Completed
+                                                  //| 0                     ( 12.23 ) Completed
+	block(1)(-1)                              //> Observable: 1
+                                                  //| 1 ( 15.26 ) 3
+                                                  //| 1 ( 15.26 ) 2
+                                                  //| 1 ( 15.26 ) 1
+                                                  //| 1 ( 15.26 ) Completed
+                                                  //| 1           ( 15.28 ) rx.lang.scala.Observable$$anon$9@7a8e6dae
+                                                  //| 1           ( 15.28 ) rx.lang.scala.Observable$$anon$9@1cc2f95e
+                                                  //| 1           ( 15.28 ) rx.lang.scala.Observable$$anon$9@44819912
+                                                  //| 1           ( 15.28 ) Completed
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 1                     ( 16.31 ) 1
+                                                  //| 1                     ( 17.31 ) 2
+                                                  //| 1                     ( 17.31 ) 1
+                                                  //| 1                     ( 18.31 ) 3
+                                                  //| 1                     ( 19.31 ) 2
+                                                  //| 1                     ( 21.31 ) 3
+                                                  //| 1                     ( 21.33 ) Completed
   println("Done")                                 //> Done
    
 }

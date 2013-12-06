@@ -40,7 +40,7 @@ object ob21 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
                  println(f"$is ( $now%5.2f ) Completed")
         }
    )
-  };System.out.println("""printOut: [T](i: Int)(obs: rx.lang.scala.Observable[T])(num: Int)(indent: Int)Unit""");$skip(505); 
+  };System.out.println("""printOut: [T](i: Int)(obs: rx.lang.scala.Observable[T])(num: Int)(indent: Int)Unit""");$skip(546); 
 
 
   def block(i: Int)(num: Int) = {
@@ -48,7 +48,9 @@ object ob21 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
     val xs: Observable[Int] = Observable(3,2,1)
     val yss: Observable[Observable[Int]] =
       xs.map(x => Observable.interval(x seconds).map(_=>x).take(2))
-    val zs: Observable[Int] = yss.concat
+    val zs: Observable[Int] =
+      if (i == 0) yss.concat
+      else yss.flatten
     // Unlike the iterable case, we are able to "traverse" the observable
     // multiple "times" through multiple subscriptions.
     printOut(i)(xs)(num)(1)
@@ -64,6 +66,8 @@ object ob21 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
   // We are printing out observables of infinite length, so
   // the only reason the worksheet terminates is that we block here
   // for a finite duration (5 seconds).
+  blocking{Thread.sleep(gap)};$skip(14);  // needed for asynchronous worksheets
+	block(1)(-1);$skip(68); 
   blocking{Thread.sleep(gap)};$skip(18);  // needed for asynchronous worksheets
   println("Done")}
    
