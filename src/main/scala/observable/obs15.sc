@@ -15,17 +15,20 @@ import duration._
 
 object ob15 {
   println("Welcome to the Scala worksheet")       //> Welcome to the Scala worksheet
- val circles: Array[(String, String)] = Array(
+
+  type P = (String, String)
+  type T = (Long, String, String)
+  type S = Seq[T]
+  
+  val circles: Array[P] = Array(
      ("Red", "Circle"),
      ("Yellow", "Circle"),
      ("Green", "Circle"),
      ("Aqua", "Circle"),
      ("Blue", "Circle"),
      ("Violet", "Circle")
-   )                                              //> circles  : Array[(String, String)] = Array((Red,Circle), (Yellow,Circle), (G
+  )                                               //> circles  : Array[(String, String)] = Array((Red,Circle), (Yellow,Circle), (G
                                                   //| reen,Circle), (Aqua,Circle), (Blue,Circle), (Violet,Circle))
- type T = (Long, String, String)
- type S = Seq[T]
 
  // This formatted printout is not as pretty as marble diagrams,
  // but attempts to capture the same content given what we have availabe
@@ -35,61 +38,25 @@ object ob15 {
  // come out in the right order.
  // This is pretty kludgy - if you don't like it, write a better one and
  // submit a pull request!
- def printOutMarbles(i:Int)(obs:Observable[T])(num:Int)(msg: String): Unit = {
+ def printOutMarbles(i:Int)(obs:Observable[T])(num:Int)(indent:Int): Unit = {
    blocking{Thread.sleep(20)}
-   val is = i.toString
+   val is:String = i.toString.padTo(indent, ' ' )
+    
    val obsP =
      if (num > 0 ) obs.take(num)
      else obs
-   msg match {
-    case "marbles" => {
-      obsP.subscribe(
-        it => {
+  obsP.subscribe (
+			   it => {
    			     val color = it._2
 		  	     val shape = it._3
 			           println(f"$is $color $shape")
-			     },
+			     } ,
         error => println(f"$is Ooops"),
         () =>    println(f"$is Completed")
-      )
-    }
-    case "fails" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is         $color $shape")
-			     },
-        error => println(f"$is         Ooops"),
-        () =>    println(f"$is         Completed")
-      )
-    }
-    case "ereturn" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is             $color $shape")
-			     },
-        error => println(f"$is             Ooops"),
-        () =>    println(f"$is             Completed")
-      )
-    }
-    case "eresume" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is                 $color $shape")
-			     },
-        error => println(f"$is                 Ooops"),
-        () =>    println(f"$is                 Completed")
-      )
-    }
-  }
-    
-  }                                               //> printOutMarbles: (i: Int)(obs: rx.lang.scala.Observable[(Long, String, Stri
-                                                  //| ng)])(num: Int)(msg: String)Unit
+        )
+    }                                             //> printOutMarbles: (i: Int)(obs: rx.lang.scala.Observable[(Long, String, Stri
+                                                  //| ng)])(num: Int)(indent: Int)Unit
+
      
   def block(i: Int)(num: Int) = {
     println("Observable: " + i.toString)
@@ -102,71 +69,72 @@ object ob15 {
     val eResume: Observable[T] = fails.onErrorResumeNext(squareMarbles)
     // Unlike the iterable case, we are able to "traverse" the observable
     // multiple "times" through multiple subscriptions.
-    if ((i == 0) || (i ==3) || (i ==4)                        ) printOutMarbles(i)(fails)(num)("fails")
-    if ((i == 1) || (i ==3)            || (i == 5) || (i == 6)) printOutMarbles(i)(eReturn)(num)("ereturn")
-    if ((i == 2) ||            (i ==4) || (i == 5)            ) printOutMarbles(i)(eResume)(num)("eresume")
-    if (                                               (i ==6)) printOutMarbles(i)(fails)(num)("fails")
+    if ((i == 0) || (i ==3) || (i ==4)                        ) printOutMarbles(i)(fails)(num)(1)
+    if ((i == 1) || (i ==3)            || (i == 5) || (i == 6)) printOutMarbles(i)(eReturn)(num)(11)
+    if ((i == 2) ||            (i ==4) || (i == 5)            ) printOutMarbles(i)(eResume)(num)(21)
+    if (                                               (i ==6)) printOutMarbles(i)(fails)(num)(31)
        
 	}                                         //> block: (i: Int)(num: Int)Unit
   // Subscribing only to failing Observable
+  val gap = 5000                                  //> gap  : Int = 5000
 	block(0)(-1)                              //> Observable: 0
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 0         Red Circle
-                                                  //| 0         Yellow Circle
-                                                  //| 0         Green Circle
-                                                  //| 0         Ooops
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 0 Red Circle
+                                                  //| 0 Yellow Circle
+                                                  //| 0 Green Circle
+                                                  //| 0 Ooops
   // Subscribing only to Observable modified by onErrorReturn
 	block(1)(-1)                              //> Observable: 1
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 1             Red Circle
-                                                  //| 1             Yellow Circle
-                                                  //| 1             Green Circle
-                                                  //| 1             Black Diamond
-                                                  //| 1             Completed
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 1           Red Circle
+                                                  //| 1           Yellow Circle
+                                                  //| 1           Green Circle
+                                                  //| 1           Black Diamond
+                                                  //| 1           Completed
   // Subscribing only to Observable modified by onErrorResumeNext
 	block(2)(-1)                              //> Observable: 2
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 2                 Red Circle
-                                                  //| 2                 Yellow Circle
-                                                  //| 2                 Green Circle
-                                                  //| 2                 Red Square
-                                                  //| 2                 Yellow Square
-                                                  //| 2                 Green Square
-                                                  //| 2                 Aqua Square
-                                                  //| 2                 Blue Square
-                                                  //| 2                 Violet Square
-                                                  //| 2                 Completed
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 2                     Red Circle
+                                                  //| 2                     Yellow Circle
+                                                  //| 2                     Green Circle
+                                                  //| 2                     Red Square
 	// Subscribing first to failing Observable, then to Observable modified by onErrorReturn
   block(3)(-1)                                    //> Observable: 3
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 3         Red Circle
-                                                  //| 3         Yellow Circle
-                                                  //| 3         Green Circle
-                                                  //| 3         Ooops
+                                                  //| 2                     Yellow Square
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 2                     Green Square
+                                                  //| 3 Red Circle
+                                                  //| 2                     Aqua Square
+                                                  //| 3 Yellow Circle
+                                                  //| 2                     Blue Square
+                                                  //| 3 Green Circle
+                                                  //| 3 Ooops
+                                                  //| 2                     Violet Square
+                                                  //| 2                     Completed
 	// Subscribing first to failing Observable, then to Observable modified by onErrorResumeNext
   block(4)(-1)                                    //> Observable: 4
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 4         Red Circle
-                                                  //| 4         Yellow Circle
-                                                  //| 4         Green Circle
-                                                  //| 4         Ooops
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 4 Red Circle
+                                                  //| 4 Yellow Circle
+                                                  //| 4 Green Circle
+                                                  //| 4 Ooops
   // Subscribing first to Observable modified by onErrorReturn, then to Observable modified by onErrorResumeNext
   
 	block(5)(-1)                              //> Observable: 5
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 5             Red Circle
-                                                  //| 5             Yellow Circle
-                                                  //| 5             Green Circle
-                                                  //| 5             Black Diamond
-                                                  //| 5             Completed
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 5           Red Circle
+                                                  //| 5           Yellow Circle
+                                                  //| 5           Green Circle
+                                                  //| 5           Black Diamond
+                                                  //| 5           Completed
   // Subscribing first to Observable modified by onErrorReturn, then to the original failing Observable
 	block(6)(-1)                              //> Observable: 6
-  blocking{Thread.sleep(10000)} // needed for asynchronous worksheets
-                                                  //> 6             Red Circle
-                                                  //| 6             Yellow Circle
-                                                  //| 6             Green Circle
-                                                  //| 6             Black Diamond
-                                                  //| 6             Completed
+  blocking{Thread.sleep(gap)} // needed for asynchronous worksheets
+                                                  //> 6           Red Circle
+                                                  //| 6           Yellow Circle
+                                                  //| 6           Green Circle
+                                                  //| 6           Black Diamond
+                                                  //| 6           Completed
 
 
   println("Done")                                 //> Done

@@ -1,15 +1,13 @@
 package observable
 
-import math.random
-import rx.lang.scala.Observable
-import scala.concurrent._
+import scala.language.postfixOps
 import scala.io.Source
 /* This worksheet demonstrates some of the code snippets from
 * Week4, Lecture 1, "Futures to Observables".
 * Review of Iterators
 */
 
-object ob11 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(311); 
+object ob11 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(267); 
   println("Welcome to the Scala worksheet");$skip(234); 
 
  def printOut[T](i:Int)(iter:Iterator[T])(num:Int): Unit = {
@@ -68,6 +66,5 @@ object ob11 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
   // The worksheet can be terminated by closing it.
   //block(9)(num = 5)
   println("Done")}
-    //blocking{Thread.sleep(3000)} // only needed for asynchronous worksheets
    
 }

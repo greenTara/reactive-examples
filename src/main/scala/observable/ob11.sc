@@ -1,8 +1,6 @@
 package observable
 
-import math.random
-import rx.lang.scala.Observable
-import scala.concurrent._
+import scala.language.postfixOps
 import scala.io.Source
 /* This worksheet demonstrates some of the code snippets from
 * Week4, Lecture 1, "Futures to Observables".
@@ -118,6 +116,5 @@ object ob11 {
   // The worksheet can be terminated by closing it.
   //block(9)(num = 5)
   println("Done")                                 //> Done
-    //blocking{Thread.sleep(3000)} // only needed for asynchronous worksheets
    
 }

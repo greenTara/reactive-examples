@@ -14,17 +14,20 @@ import duration._
 */
 
 object ob15 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; def main(args: Array[String])=$execute{;$skip(488); 
-  println("Welcome to the Scala worksheet");$skip(205); 
- val circles: Array[(String, String)] = Array(
+  println("Welcome to the Scala worksheet")
+
+  type P = (String, String)
+  type T = (Long, String, String)
+  type S = Seq[T];$skip(274); 
+  
+  val circles: Array[P] = Array(
      ("Red", "Circle"),
      ("Yellow", "Circle"),
      ("Green", "Circle"),
      ("Aqua", "Circle"),
      ("Blue", "Circle"),
      ("Violet", "Circle")
-   )
- type T = (Long, String, String)
- type S = Seq[T];System.out.println("""circles  : Array[(String, String)] = """ + $show(circles ));$skip(1916); 
+  );System.out.println("""circles  : Array[(String, String)] = """ + $show(circles ));$skip(924); 
 
  // This formatted printout is not as pretty as marble diagrams,
  // but attempts to capture the same content given what we have availabe
@@ -34,60 +37,24 @@ object ob15 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
  // come out in the right order.
  // This is pretty kludgy - if you don't like it, write a better one and
  // submit a pull request!
- def printOutMarbles(i:Int)(obs:Observable[T])(num:Int)(msg: String): Unit = {
+ def printOutMarbles(i:Int)(obs:Observable[T])(num:Int)(indent:Int): Unit = {
    blocking{Thread.sleep(20)}
-   val is = i.toString
+   val is:String = i.toString.padTo(indent, ' ' )
+    
    val obsP =
      if (num > 0 ) obs.take(num)
      else obs
-   msg match {
-    case "marbles" => {
-      obsP.subscribe(
-        it => {
+  obsP.subscribe (
+			   it => {
    			     val color = it._2
 		  	     val shape = it._3
 			           println(f"$is $color $shape")
-			     },
+			     } ,
         error => println(f"$is Ooops"),
         () =>    println(f"$is Completed")
-      )
-    }
-    case "fails" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is         $color $shape")
-			     },
-        error => println(f"$is         Ooops"),
-        () =>    println(f"$is         Completed")
-      )
-    }
-    case "ereturn" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is             $color $shape")
-			     },
-        error => println(f"$is             Ooops"),
-        () =>    println(f"$is             Completed")
-      )
-    }
-    case "eresume" => {
-      obsP.subscribe(
-        it => {
-   			     val color = it._2
-		  	     val shape = it._3
-			           println(f"$is                 $color $shape")
-			     },
-        error => println(f"$is                 Ooops"),
-        () =>    println(f"$is                 Completed")
-      )
-    }
-  }
-    
-  };System.out.println("""printOutMarbles: (i: Int)(obs: rx.lang.scala.Observable[(Long, String, String)])(num: Int)(msg: String)Unit""");$skip(1163); 
+        )
+    };System.out.println("""printOutMarbles: (i: Int)(obs: rx.lang.scala.Observable[(Long, String, String)])(num: Int)(indent: Int)Unit""");$skip(1139); 
+
      
   def block(i: Int)(num: Int) = {
     println("Observable: " + i.toString)
@@ -100,34 +67,35 @@ object ob15 {;import org.scalaide.worksheet.runtime.library.WorksheetSupport._; 
     val eResume: Observable[T] = fails.onErrorResumeNext(squareMarbles)
     // Unlike the iterable case, we are able to "traverse" the observable
     // multiple "times" through multiple subscriptions.
-    if ((i == 0) || (i ==3) || (i ==4)                        ) printOutMarbles(i)(fails)(num)("fails")
-    if ((i == 1) || (i ==3)            || (i == 5) || (i == 6)) printOutMarbles(i)(eReturn)(num)("ereturn")
-    if ((i == 2) ||            (i ==4) || (i == 5)            ) printOutMarbles(i)(eResume)(num)("eresume")
-    if (                                               (i ==6)) printOutMarbles(i)(fails)(num)("fails")
+    if ((i == 0) || (i ==3) || (i ==4)                        ) printOutMarbles(i)(fails)(num)(1)
+    if ((i == 1) || (i ==3)            || (i == 5) || (i == 6)) printOutMarbles(i)(eReturn)(num)(11)
+    if ((i == 2) ||            (i ==4) || (i == 5)            ) printOutMarbles(i)(eResume)(num)(21)
+    if (                                               (i ==6)) printOutMarbles(i)(fails)(num)(31)
        
-	};System.out.println("""block: (i: Int)(num: Int)Unit""");$skip(58); 
+	};System.out.println("""block: (i: Int)(num: Int)Unit""");$skip(61); 
   // Subscribing only to failing Observable
-	block(0)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(76);  // needed for asynchronous worksheets
+  val gap = 5000;System.out.println("""gap  : Int = """ + $show(gap ));$skip(14); 
+	block(0)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(76);  // needed for asynchronous worksheets
   // Subscribing only to Observable modified by onErrorReturn
-	block(1)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(80);  // needed for asynchronous worksheets
+	block(1)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(80);  // needed for asynchronous worksheets
   // Subscribing only to Observable modified by onErrorResumeNext
-	block(2)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(105);  // needed for asynchronous worksheets
+	block(2)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(105);  // needed for asynchronous worksheets
 	// Subscribing first to failing Observable, then to Observable modified by onErrorReturn
-  block(3)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(109);  // needed for asynchronous worksheets
+  block(3)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(109);  // needed for asynchronous worksheets
 	// Subscribing first to failing Observable, then to Observable modified by onErrorResumeNext
-  block(4)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(130);  // needed for asynchronous worksheets
+  block(4)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(130);  // needed for asynchronous worksheets
   // Subscribing first to Observable modified by onErrorReturn, then to Observable modified by onErrorResumeNext
   
-	block(5)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(118);  // needed for asynchronous worksheets
+	block(5)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(118);  // needed for asynchronous worksheets
   // Subscribing first to Observable modified by onErrorReturn, then to the original failing Observable
-	block(6)(-1);$skip(70); 
-  blocking{Thread.sleep(10000)};$skip(20);  // needed for asynchronous worksheets
+	block(6)(-1);$skip(68); 
+  blocking{Thread.sleep(gap)};$skip(20);  // needed for asynchronous worksheets
 
 
   println("Done")}
