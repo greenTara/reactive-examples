@@ -18,6 +18,7 @@ project/plugins/project/
 .classpath
 .project
 .settings
+.worksheet
 
 # made by idea
 # you can create the intellij idea project file by running `sbt gen-idea`
