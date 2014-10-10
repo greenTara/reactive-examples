@@ -33,8 +33,8 @@ object node13 {
       result = await { withTry(block) }
 
       result match {
-        case Success(s) => { i = i + 1 }
-        case Failure(f) => { i = n }
+        case Success(s) => { i = n }
+        case Failure(f) => { i += 1 }
       }
     }
 
