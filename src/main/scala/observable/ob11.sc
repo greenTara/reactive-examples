@@ -41,7 +41,7 @@ object ob11 {
     val iter = i match {
       case 0  =>  iter0.flatMap( n => (n*10 to (n*10 + 5) by 1).iterator )
       case 1 => iter0.map( n => n*n )
-      case 2 => iter0 ++ iter0 //this just returns iter0 - why is that?
+      case 2 => iter0 ++ iter0
       case 3 => iter0 ++ iter1
       case 4 => iter0.filter( n => n%4 == 0 )
       case 5 => iter0.take(3)
